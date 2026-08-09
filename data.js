@@ -1,6 +1,15 @@
 // English Quest content file.
 // Neue Schulvokabeln können später hier ergänzt werden, ohne das ganze Portal umzubauen.
 
+// Reihenfolge und Beschriftung der Wortkategorien für die Oberfläche.
+// Neue Kategorien hier eintragen und anschließend im VOCAB_BANK mit derselben ID anlegen.
+const VOCAB_CATEGORIES = [
+  {id:"gaming", label:"Gaming"},
+  {id:"everyday", label:"Alltag"},
+  {id:"school", label:"Schule"},
+  {id:"creator", label:"Creator"}
+];
+
 const VOCAB_BANK = {
   gaming: [
     {en:"shield",de:"Schild",ru:"щит",icon:"🛡️",s:"I need a shield."},
