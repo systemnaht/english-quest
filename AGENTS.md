@@ -32,4 +32,5 @@
 - Wörter besitzen die Lernstufen Neu, Üben und Sicher.
 - Neue und schwierige Wörter werden häufiger wiederholt als sichere Wörter.
 - Sichere Wörter bleiben gelegentlich in der Wiederholung.
+- Im Lernmodus muss der Benutzer mit „Gewusst“ oder „Noch üben“ selbst bewerten können. Reines Anzeigen oder Anhören eines Wortes zählt nicht als Lernerfolg.
 - Neue Funktionen dürfen vorhandenen Lernfortschritt in localStorage nicht ohne Migration oder ausdrücklichen Reset löschen.
