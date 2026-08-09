@@ -10,6 +10,7 @@
 ## Lerninhalte
 
 - Jede Vokabel benötigt eine englische, deutsche und russische Fassung.
+- Jeder englische Beispielsatz benötigt eine deutsche und eine russische Satzübersetzung.
 - Beispielsätze müssen einfach, kurz und altersgerecht sein.
 - Der Themenmix umfasst Schulenglisch, Alltag, Gaming sowie Creator-/Challenge-Inhalte.
 - Neue Schulvokabeln sollen bevorzugt in `data.js` ergänzt werden.
