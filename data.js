@@ -52,7 +52,15 @@ const VOCAB_BANK = {
     {en:"shoes",de:"Schuhe",ru:"обувь",icon:"👟",s:"My shoes are blue.",s_de:"Meine Schuhe sind blau.",s_ru:"Моя обувь синяя."},
     {en:"castles",de:"Burgen / Schlösser",ru:"замки",icon:"🏰",s:"The castles are big.",s_de:"Die Burgen sind groß.",s_ru:"Замки большие."},
     {en:"colorful",de:"bunt / farbenfroh",ru:"разноцветный / красочный",icon:"🌈",s:"The picture is colorful.",s_de:"Das Bild ist bunt.",s_ru:"Картина красочная."},
-    {en:"touches",de:"berührt",ru:"касается",icon:"👆",s:"She touches the ball.",s_de:"Sie berührt den Ball.",s_ru:"Она касается мяча."}
+    {en:"touches",de:"berührt",ru:"касается",icon:"👆",s:"She touches the ball.",s_de:"Sie berührt den Ball.",s_ru:"Она касается мяча."},
+    {en:"brave",de:"mutig",ru:"смелый",icon:"🦁",s:"The brave girl helps.",s_de:"Das mutige Mädchen hilft.",s_ru:"Смелая девочка помогает."},
+    {en:"puzzle",de:"Rätsel / Puzzle",ru:"головоломка",icon:"🧩",s:"This puzzle is easy.",s_de:"Dieses Rätsel ist einfach.",s_ru:"Эта головоломка простая."},
+    {en:"build",de:"bauen",ru:"строить",icon:"🧱",s:"We build a small house.",s_de:"Wir bauen ein kleines Haus.",s_ru:"Мы строим маленький дом."},
+    {en:"cloudy",de:"bewölkt",ru:"облачный",icon:"☁️",s:"It is cloudy today.",s_de:"Heute ist es bewölkt.",s_ru:"Сегодня облачно."},
+    {en:"curly",de:"lockig",ru:"кудрявый",icon:"🌀",s:"Her hair is curly.",s_de:"Ihre Haare sind lockig.",s_ru:"У неё кудрявые волосы."},
+    {en:"sneakers",de:"Turnschuhe / Sneaker",ru:"кроссовки",icon:"👟",s:"My sneakers are new.",s_de:"Meine Turnschuhe sind neu.",s_ru:"Мои кроссовки новые."},
+    {en:"castle",de:"Burg / Schloss",ru:"замок",icon:"🏰",s:"The castle is big.",s_de:"Die Burg ist groß.",s_ru:"Замок большой."},
+    {en:"strange",de:"seltsam / merkwürdig",ru:"странный",icon:"🛸",s:"That sound is strange.",s_de:"Dieses Geräusch ist seltsam.",s_ru:"Этот звук странный."}
   ],
   creator: [
     {en:"challenge",de:"Challenge / Aufgabe",ru:"челлендж / задание",icon:"🏆",s:"This challenge is difficult.",s_de:"Diese Challenge ist schwierig.",s_ru:"Этот челлендж сложный."},
@@ -80,7 +88,11 @@ const PRONUNCIATION_TRAPS = [
   {en:"with",de:"mit",ru:"с",icon:"🫶",hint_ru:"В конце слегка высунь язык между зубами. Не добавляй немецкий звук т.",s:"Come with me.",s_de:"Komm mit mir.",s_ru:"Идём со мной."},
   {en:"shoes",de:"Schuhe",ru:"обувь",icon:"👟",hint_ru:"Сочетание oo произносится как долгое у. В конце s звучит звонко, как з.",s:"My shoes are blue.",s_de:"Meine Schuhe sind blau.",s_ru:"Моя обувь синяя."},
   {en:"castles",de:"Burgen / Schlösser",ru:"замки",icon:"🏰",hint_ru:"Буква t не произносится. Говори примерно каслз, а не кастэлс.",s:"The castles are big.",s_de:"Die Burgen sind groß.",s_ru:"Замки большие."},
-  {en:"touches",de:"berührt",ru:"касается",icon:"👆",hint_ru:"Буква u звучит коротко, как а. Окончание произноси как из: тач-из.",s:"She touches the ball.",s_de:"Sie berührt den Ball.",s_ru:"Она касается мяча."}
+  {en:"touches",de:"berührt",ru:"касается",icon:"👆",hint_ru:"Буква u звучит коротко, как а. Окончание произноси как из: тач-из.",s:"She touches the ball.",s_de:"Sie berührt den Ball.",s_ru:"Она касается мяча."},
+  {en:"curly",de:"lockig",ru:"кудрявый",icon:"🌀",hint_ru:"В начале язык слегка загни назад для звука кёр. Конец произнеси легко: ли.",s:"Her hair is curly.",s_de:"Ihre Haare sind lockig.",s_ru:"У неё кудрявые волосы."},
+  {en:"sneakers",de:"Turnschuhe / Sneaker",ru:"кроссовки",icon:"👟",hint_ru:"Начни со слитного сн. Долгий звук и произнеси без немецкого растягивания.",s:"My sneakers are new.",s_de:"Meine Turnschuhe sind neu.",s_ru:"Мои кроссовки новые."},
+  {en:"strange",de:"seltsam / merkwürdig",ru:"странный",icon:"🛸",hint_ru:"Начни со слитного стр. В середине звучит эй, а в конце мягкий звук дж.",s:"That sound is strange.",s_de:"Dieses Geräusch ist seltsam.",s_ru:"Этот звук странный."},
+  {en:"castle",de:"Burg / Schloss",ru:"замок",icon:"🏰",hint_ru:"Буква t не произносится. После кас сразу переходи к мягкому л.",s:"The castle is big.",s_de:"Die Burg ist groß.",s_ru:"Замок большой."}
 ];
 
 const SENTENCE_BUILDS = [
@@ -94,7 +106,11 @@ const SENTENCE_BUILDS = [
   {de:"Wir spielen immer zusammen.",ru:"Мы всегда играем вместе.",en:"We always play together.",help:"Starte mit „We“. „Always“ steht vor „play“."},
   {de:"Ich suche meine Handtücher.",ru:"Я ищу свои полотенца.",en:"I am looking for my towels.",help:"„Looking for“ bleibt zusammen. Davor stehen „I am“."},
   {de:"Die Burgen sind bunt.",ru:"Замки разноцветные.",en:"The castles are colorful.",help:"Starte mit „The castles“. Danach kommt „are“."},
-  {de:"Sie ist schlau.",ru:"Она умная.",en:"She is smart.",help:"Starte mit „She“. Danach kommt „is“."}
+  {de:"Sie ist schlau.",ru:"Она умная.",en:"She is smart.",help:"Starte mit „She“. Danach kommt „is“."},
+  {de:"Heute ist es bewölkt.",ru:"Сегодня облачно.",en:"It is cloudy today.",help:"Starte mit „It is“. „Today“ steht am Ende."},
+  {de:"Meine Turnschuhe sind neu.",ru:"Мои кроссовки новые.",en:"My sneakers are new.",help:"Starte mit „My sneakers“. Danach kommt „are“."},
+  {de:"Die Burg ist groß.",ru:"Замок большой.",en:"The castle is big.",help:"Starte mit „The castle“. Danach kommt „is“."},
+  {de:"Wir bauen ein kleines Haus.",ru:"Мы строим маленький дом.",en:"We build a small house.",help:"Nach „We“ kommt das Verb „build“."}
 ];
 
 const CREATOR_CHALLENGES = [
