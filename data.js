@@ -37,7 +37,22 @@ const VOCAB_BANK = {
     {en:"question",de:"Frage",ru:"вопрос",icon:"❓",s:"I have a question."},
     {en:"answer",de:"Antwort",ru:"ответ",icon:"✅",s:"I know the answer."},
     {en:"school",de:"Schule",ru:"школа",icon:"🏫",s:"I go to school."},
-    {en:"read",de:"lesen",ru:"читать",icon:"📖",s:"Read the sentence."}
+    {en:"read",de:"lesen",ru:"читать",icon:"📖",s:"Read the sentence."},
+    {en:"favorite",de:"Lieblings- / am liebsten",ru:"любимый",icon:"⭐",s:"Blue is my favorite color."},
+    {en:"their",de:"ihr / ihre",ru:"их",icon:"👫",s:"Their dog is happy."},
+    {en:"together",de:"zusammen",ru:"вместе",icon:"🤝",s:"We play together."},
+    {en:"hair",de:"Haare",ru:"волосы",icon:"💇",s:"Her hair is long."},
+    {en:"towels",de:"Handtücher",ru:"полотенца",icon:"🧻",s:"The towels are clean."},
+    {en:"always",de:"immer",ru:"всегда",icon:"🔁",s:"I always smile."},
+    {en:"new",de:"neu",ru:"новый",icon:"✨",s:"My bag is new."},
+    {en:"looking for",de:"suchen nach",ru:"искать",icon:"🔎",s:"I am looking for my book."},
+    {en:"smart",de:"schlau / klug",ru:"умный",icon:"🧠",s:"She is smart."},
+    {en:"with",de:"mit",ru:"с",icon:"🫶",s:"Come with me."},
+    {en:"suddenly",de:"plötzlich",ru:"вдруг",icon:"⚡",s:"Suddenly, it is dark."},
+    {en:"shoes",de:"Schuhe",ru:"обувь",icon:"👟",s:"My shoes are blue."},
+    {en:"castles",de:"Burgen / Schlösser",ru:"замки",icon:"🏰",s:"The castles are big."},
+    {en:"colorful",de:"bunt / farbenfroh",ru:"разноцветный / красочный",icon:"🌈",s:"The picture is colorful."},
+    {en:"touches",de:"berührt",ru:"касается",icon:"👆",s:"She touches the ball."}
   ],
   creator: [
     {en:"challenge",de:"Challenge / Aufgabe",ru:"челлендж / задание",icon:"🏆",s:"This challenge is difficult."},
@@ -57,7 +72,15 @@ const PRONUNCIATION_TRAPS = [
   {en:"school",de:"Schule",ru:"школа",icon:"🏫",hint:"Beginnt mit „sk“, nicht deutschem „sch“.",s:"I go to school."},
   {en:"game",de:"Spiel",ru:"игра",icon:"🎮",hint:"Das a klingt wie im englischen „name“.",s:"This game is fun."},
   {en:"build",de:"bauen",ru:"строить",icon:"🧱",hint:"Kurzes i. Das u wird nicht wie deutsches u gesprochen.",s:"Let's build a house."},
-  {en:"sword",de:"Schwert",ru:"меч",icon:"⚔️",hint:"Das w wird nicht gesprochen.",s:"I have a sword."}
+  {en:"sword",de:"Schwert",ru:"меч",icon:"⚔️",hint:"Das w wird nicht gesprochen.",s:"I have a sword."},
+  {en:"favorite",de:"Lieblings- / am liebsten",ru:"любимый",icon:"⭐",hint:"Das erste a klingt wie ein langes englisches „ei“. Sprich das Wort in drei Teilen: fay-vor-it.",s:"Blue is my favorite color."},
+  {en:"their",de:"ihr / ihre",ru:"их",icon:"👫",hint:"Weiches th: Zungenspitze leicht zwischen die Zähne. Nicht deutsches „der“.",s:"Their dog is happy."},
+  {en:"together",de:"zusammen",ru:"вместе",icon:"🤝",hint:"Das th weich sprechen: Die Zungenspitze liegt leicht zwischen den Zähnen. Nicht deutsches t oder d.",s:"We play together."},
+  {en:"towels",de:"Handtücher",ru:"полотенца",icon:"🧻",hint:"Das ow gleitet von „au“ zu einem kurzen Schwa. Sprich nicht „Towels“ wie ein deutsches Wort.",s:"The towels are clean."},
+  {en:"with",de:"mit",ru:"с",icon:"🫶",hint:"Am Ende die Zungenspitze leicht zwischen die Zähne setzen. Kein deutsches t anhängen.",s:"Come with me."},
+  {en:"shoes",de:"Schuhe",ru:"обувь",icon:"👟",hint:"Das oo klingt wie ein langes u. Am Ende klingt s stimmhaft wie ein summendes z.",s:"My shoes are blue."},
+  {en:"castles",de:"Burgen / Schlösser",ru:"замки",icon:"🏰",hint:"Das t bleibt stumm: Sprich ungefähr „kaa-sls“, nicht „kas-tels“.",s:"The castles are big."},
+  {en:"touches",de:"berührt",ru:"касается",icon:"👆",hint:"Das u klingt kurz wie in „Bus“. Die Endung klingt „iz“: touch-iz.",s:"She touches the ball."}
 ];
 
 const SENTENCE_BUILDS = [
@@ -66,7 +89,12 @@ const SENTENCE_BUILDS = [
   {de:"Wir bauen ein Haus.",ru:"Мы строим дом.",en:"We build a house.",help:"Starte mit „We“. Das Verb steht direkt danach."},
   {de:"Ich bin hungrig.",ru:"Я голоден.",en:"I am hungry.",help:"Bei „I“ benutzt Du hier „am“."},
   {de:"Bist du bereit?",ru:"Ты готов?",en:"Are you ready?",help:"Bei einer Frage steht „Are“ ganz vorne."},
-  {de:"Schau dir das an!",ru:"Посмотри на это!",en:"Watch this!",help:"Der Satz beginnt direkt mit dem Verb „Watch“."}
+  {de:"Schau dir das an!",ru:"Посмотри на это!",en:"Watch this!",help:"Der Satz beginnt direkt mit dem Verb „Watch“."},
+  {de:"Ihre Schuhe sind neu.",ru:"Их обувь новая.",en:"Their shoes are new.",help:"Starte mit „Their shoes“. Danach kommt „are“."},
+  {de:"Wir spielen immer zusammen.",ru:"Мы всегда играем вместе.",en:"We always play together.",help:"Starte mit „We“. „Always“ steht vor „play“."},
+  {de:"Ich suche meine Handtücher.",ru:"Я ищу свои полотенца.",en:"I am looking for my towels.",help:"„Looking for“ bleibt zusammen. Davor stehen „I am“."},
+  {de:"Die Burgen sind bunt.",ru:"Замки разноцветные.",en:"The castles are colorful.",help:"Starte mit „The castles“. Danach kommt „are“."},
+  {de:"Sie ist schlau.",ru:"Она умная.",en:"She is smart.",help:"Starte mit „She“. Danach kommt „is“."}
 ];
 
 const CREATOR_CHALLENGES = [
