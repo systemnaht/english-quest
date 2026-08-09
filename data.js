@@ -65,22 +65,22 @@ const VOCAB_BANK = {
 };
 
 const PRONUNCIATION_TRAPS = [
-  {en:"three",de:"drei",ru:"три",icon:"3️⃣",hint_ru:"Слегка высунь кончик языка между зубами. Не говори «сри».",s:"I have three blocks.",s_de:"Ich habe drei Blöcke.",s_ru:"У меня есть три блока."},
-  {en:"this",de:"dies / das",ru:"это / этот",icon:"👉",hint_ru:"Слегка высунь язык между зубами и добавь голос. Не говори «дис».",s:"This is my house.",s_de:"Das ist mein Haus.",s_ru:"Это мой дом."},
-  {en:"world",de:"Welt",ru:"мир",icon:"🌍",hint_ru:"Начни с округлённых губ, затем быстро соедини звуки «р» и «л».",s:"This is my world.",s_de:"Das ist meine Welt.",s_ru:"Это мой мир."},
+  {en:"three",de:"drei",ru:"три",icon:"3️⃣",hint_ru:"Слегка высунь кончик языка между зубами. Не говори сри.",s:"I have three blocks.",s_de:"Ich habe drei Blöcke.",s_ru:"У меня есть три блока."},
+  {en:"this",de:"dies / das",ru:"это / этот",icon:"👉",hint_ru:"Слегка высунь язык между зубами и добавь голос. Не говори дис.",s:"This is my house.",s_de:"Das ist mein Haus.",s_ru:"Это мой дом."},
+  {en:"world",de:"Welt",ru:"мир",icon:"🌍",hint_ru:"Начни с округлённых губ, затем быстро соедини звуки р и л.",s:"This is my world.",s_de:"Das ist meine Welt.",s_ru:"Это мой мир."},
   {en:"water",de:"Wasser",ru:"вода",icon:"💧",hint_ru:"Начни с округлённых губ. Не произноси начало как немецкое w.",s:"I need water.",s_de:"Ich brauche Wasser.",s_ru:"Мне нужна вода."},
-  {en:"school",de:"Schule",ru:"школа",icon:"🏫",hint_ru:"В начале говори «ск», а не немецкое «ш».",s:"I go to school.",s_de:"Ich gehe zur Schule.",s_ru:"Я хожу в школу."},
-  {en:"game",de:"Spiel",ru:"игра",icon:"🎮",hint_ru:"Буква a звучит как «эй», почти как в слове name.",s:"This game is fun.",s_de:"Dieses Spiel macht Spaß.",s_ru:"Эта игра весёлая."},
-  {en:"build",de:"bauen",ru:"строить",icon:"🧱",hint_ru:"Гласный звук короткий, похож на «и». Не произноси u как немецкое «у».",s:"Let's build a house.",s_de:"Lass uns ein Haus bauen.",s_ru:"Давай построим дом."},
-  {en:"sword",de:"Schwert",ru:"меч",icon:"⚔️",hint_ru:"Буква w здесь молчит. Начинай слово сразу со звука «с».",s:"I have a sword.",s_de:"Ich habe ein Schwert.",s_ru:"У меня есть меч."},
-  {en:"favorite",de:"Lieblings- / am liebsten",ru:"любимый",icon:"⭐",hint_ru:"Первая a звучит как «эй». Произнеси слово тремя короткими частями: «фэй-вэ-рит».",s:"Blue is my favorite color.",s_de:"Blau ist meine Lieblingsfarbe.",s_ru:"Синий — мой любимый цвет."},
-  {en:"their",de:"ihr / ihre",ru:"их",icon:"👫",hint_ru:"Слегка высунь язык между зубами и добавь голос. Не говори немецкое «дэр».",s:"Their dog is happy.",s_de:"Ihr Hund ist glücklich.",s_ru:"Их собака счастлива."},
-  {en:"together",de:"zusammen",ru:"вместе",icon:"🤝",hint_ru:"Для th слегка высунь язык между зубами. Не заменяй этот звук на «т» или «д».",s:"We play together.",s_de:"Wir spielen zusammen.",s_ru:"Мы играем вместе."},
-  {en:"towels",de:"Handtücher",ru:"полотенца",icon:"🧻",hint_ru:"В середине плавно скажи «ау», а конец произнеси легко и быстро.",s:"The towels are clean.",s_de:"Die Handtücher sind sauber.",s_ru:"Полотенца чистые."},
-  {en:"with",de:"mit",ru:"с",icon:"🫶",hint_ru:"В конце слегка высунь язык между зубами. Не добавляй немецкий звук «т».",s:"Come with me.",s_de:"Komm mit mir.",s_ru:"Идём со мной."},
-  {en:"shoes",de:"Schuhe",ru:"обувь",icon:"👟",hint_ru:"Сочетание oo произносится как долгое «у». В конце s звучит звонко, как «з».",s:"My shoes are blue.",s_de:"Meine Schuhe sind blau.",s_ru:"Моя обувь синяя."},
-  {en:"castles",de:"Burgen / Schlösser",ru:"замки",icon:"🏰",hint_ru:"Буква t не произносится. Говори примерно «каслз», а не «кастэлс».",s:"The castles are big.",s_de:"Die Burgen sind groß.",s_ru:"Замки большие."},
-  {en:"touches",de:"berührt",ru:"касается",icon:"👆",hint_ru:"Буква u звучит коротко, как «а». Окончание произноси как «из»: «тач-из».",s:"She touches the ball.",s_de:"Sie berührt den Ball.",s_ru:"Она касается мяча."}
+  {en:"school",de:"Schule",ru:"школа",icon:"🏫",hint_ru:"В начале говори ск, а не немецкое ш.",s:"I go to school.",s_de:"Ich gehe zur Schule.",s_ru:"Я хожу в школу."},
+  {en:"game",de:"Spiel",ru:"игра",icon:"🎮",hint_ru:"Буква a звучит как эй, почти как в слове name.",s:"This game is fun.",s_de:"Dieses Spiel macht Spaß.",s_ru:"Эта игра весёлая."},
+  {en:"build",de:"bauen",ru:"строить",icon:"🧱",hint_ru:"Гласный звук короткий, похож на и. Не произноси u как немецкое у.",s:"Let's build a house.",s_de:"Lass uns ein Haus bauen.",s_ru:"Давай построим дом."},
+  {en:"sword",de:"Schwert",ru:"меч",icon:"⚔️",hint_ru:"Буква w здесь молчит. Начинай слово сразу со звука с.",s:"I have a sword.",s_de:"Ich habe ein Schwert.",s_ru:"У меня есть меч."},
+  {en:"favorite",de:"Lieblings- / am liebsten",ru:"любимый",icon:"⭐",hint_ru:"Первая a звучит как эй. Произнеси слово тремя короткими частями: фэй-вэ-рит.",s:"Blue is my favorite color.",s_de:"Blau ist meine Lieblingsfarbe.",s_ru:"Синий — мой любимый цвет."},
+  {en:"their",de:"ihr / ihre",ru:"их",icon:"👫",hint_ru:"Слегка высунь язык между зубами и добавь голос. Не говори немецкое дэр.",s:"Their dog is happy.",s_de:"Ihr Hund ist glücklich.",s_ru:"Их собака счастлива."},
+  {en:"together",de:"zusammen",ru:"вместе",icon:"🤝",hint_ru:"Для th слегка высунь язык между зубами. Не заменяй этот звук на т или д.",s:"We play together.",s_de:"Wir spielen zusammen.",s_ru:"Мы играем вместе."},
+  {en:"towels",de:"Handtücher",ru:"полотенца",icon:"🧻",hint_ru:"В середине плавно скажи ау, а конец произнеси легко и быстро.",s:"The towels are clean.",s_de:"Die Handtücher sind sauber.",s_ru:"Полотенца чистые."},
+  {en:"with",de:"mit",ru:"с",icon:"🫶",hint_ru:"В конце слегка высунь язык между зубами. Не добавляй немецкий звук т.",s:"Come with me.",s_de:"Komm mit mir.",s_ru:"Идём со мной."},
+  {en:"shoes",de:"Schuhe",ru:"обувь",icon:"👟",hint_ru:"Сочетание oo произносится как долгое у. В конце s звучит звонко, как з.",s:"My shoes are blue.",s_de:"Meine Schuhe sind blau.",s_ru:"Моя обувь синяя."},
+  {en:"castles",de:"Burgen / Schlösser",ru:"замки",icon:"🏰",hint_ru:"Буква t не произносится. Говори примерно каслз, а не кастэлс.",s:"The castles are big.",s_de:"Die Burgen sind groß.",s_ru:"Замки большие."},
+  {en:"touches",de:"berührt",ru:"касается",icon:"👆",hint_ru:"Буква u звучит коротко, как а. Окончание произноси как из: тач-из.",s:"She touches the ball.",s_de:"Sie berührt den Ball.",s_ru:"Она касается мяча."}
 ];
 
 const SENTENCE_BUILDS = [
