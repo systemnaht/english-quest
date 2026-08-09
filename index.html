@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>English Quest</title>
+<style>
+:root{
+  --bg:#130c2b;--panel:#18143a;--panel2:#241b55;--text:#fff;--muted:#c7c4db;
+  --cyan:#32d7ff;--purple:#8b5cf6;--pink:#ec4899;--lime:#b6ff4a;--border:#4b3f7a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+  background:
+    radial-gradient(circle at 18% 15%,rgba(50,215,255,.22),transparent 24%),
+    radial-gradient(circle at 80% 18%,rgba(236,72,153,.22),transparent 28%),
+    radial-gradient(circle at 50% 85%,rgba(139,92,246,.28),transparent 34%),
+    linear-gradient(180deg,#1e0f45 0%,#171244 42%,#0b1936 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;
+  background:
+    linear-gradient(120deg,transparent 0 35%,rgba(50,215,255,.22) 36% 37%,transparent 38% 100%),
+    linear-gradient(60deg,transparent 0 62%,rgba(236,72,153,.18) 63% 64%,transparent 65% 100%);
+  background-size:260px 260px,320px 320px;
+}
+body:after{
+  content:"";position:fixed;left:-10%;right:-10%;bottom:-60px;height:240px;pointer-events:none;opacity:.28;
+  background:repeating-linear-gradient(90deg,transparent 0 56px,rgba(50,215,255,.35) 58px 60px),
+             repeating-linear-gradient(0deg,transparent 0 40px,rgba(139,92,246,.28) 42px 44px);
+  transform:perspective(420px) rotateX(58deg);
+}
+main{max-width:940px;margin:auto;padding:16px;position:relative;z-index:1}
+header{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.titlebox{display:flex;gap:12px;align-items:center}
+.logo{
+  width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:2rem;
+  background:linear-gradient(135deg,var(--cyan),var(--purple),var(--pink));border:1px solid rgba(255,255,255,.4)
+}
+h1{margin:0;font-size:1.8rem;text-transform:uppercase;letter-spacing:.04em}
+.stats{display:flex;gap:8px}.stat{background:rgba(24,20,58,.88);border:1px solid var(--border);border-radius:16px;padding:10px 14px;backdrop-filter:blur(8px)}.stat b{display:block;font-size:1.35rem}
+.muted{color:var(--muted)} .nav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+button,select{
+  background:rgba(36,27,85,.96);color:var(--text);border:1px solid var(--border);border-radius:14px;
+  padding:11px 14px;font-size:1rem;cursor:pointer;transition:.15s transform,.15s border-color
+}
+button:hover{border-color:var(--cyan);transform:translateY(-1px)}
+button.primary{background:linear-gradient(135deg,var(--cyan),#5b8cff);color:#07132b;border-color:transparent;font-weight:800}
+button.help{padding:6px 10px;font-size:.85rem;background:linear-gradient(135deg,#fde047,#fb923c);color:#321400;border:0}
+.panel{
+  display:none;background:rgba(24,20,58,.9);border:1px solid var(--border);border-radius:22px;
+  padding:18px;margin-bottom:16px;backdrop-filter:blur(10px)
+}
+.panel.active{display:block}
+.card{background:rgba(36,27,85,.88);border:1px solid var(--border);border-radius:18px;padding:18px;margin-top:12px}
+.big{font-size:2rem;font-weight:850;margin:8px 0}.callout{background:rgba(9,32,74,.82);border-left:4px solid var(--cyan);padding:12px;border-radius:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice{width:100%;text-align:left;margin:5px 0}
+.progress{height:11px;background:#090b21;border:1px solid var(--border);border-radius:99px;overflow:hidden}.progress div{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));width:0}
+.answer{min-height:56px;border:1px dashed #8878c5;border-radius:12px;padding:10px;margin:10px 0}.piece{margin:4px}
+.badge{display:inline-block;background:#0b2855;border:1px solid #2b6ba3;border-radius:999px;padding:5px 9px;font-size:.85rem}
+.translation{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.translation span{background:rgba(12,17,45,.65);padding:6px 9px;border-radius:10px}
+.helpbox{display:none;margin-top:10px;background:rgba(91,49,8,.5);border:1px solid #f59e0b;border-radius:12px;padding:10px}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:16px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}.stats{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.stat{padding:9px}.logo{width:48px;height:48px}}
+</style>
+<script src="data.js"></script>
+</head>
+<body>
+<main>
+<header>
+  <div class="titlebox"><div class="logo">⚡</div><div><h1>English Quest</h1><div class="muted">Battle English · Listen · Build · Win</div></div></div>
+  <div class="stats">
+    <div class="stat"><span class="muted">XP</span><b id="xp">0</b></div>
+    <div class="stat"><span class="muted">Level</span><b id="level">1</b></div>
+    <div class="stat"><span class="muted">Streak</span><b id="streak">0</b></div>
+  </div>
+</header>
+
+<div class="nav">
+  <button class="primary" data-tab="today">🎯 Heute</button><button data-tab="listen">🎧 Hören</button>
+  <button data-tab="words">🎒 Wörter</button><button data-tab="build">🧱 Sätze</button>
+  <button data-tab="creator">📹 Creator</button><button data-tab="boss">👾 Boss</button>
+</div>
+
+<section id="today" class="panel active">
+  <h2>🎯 Today's Quest</h2><p class="muted">Fünf Aufgaben. Danach ist Schluss.</p>
+  <div class="progress"><div id="dailyProgress"></div></div><div id="dailyBox" class="card"></div>
+  <button id="dailyStart" class="primary" style="width:100%;margin-top:10px">Quest starten</button>
+</section>
+
+<section id="listen" class="panel">
+  <h2>🎧 Listen & Repeat</h2><p class="muted">Hören → laut nachsprechen → langsam noch einmal hören.</p>
+  <div class="card">
+    <span class="badge">German Trap</span><div id="trapIcon" style="font-size:2.7rem;margin-top:8px"></div>
+    <div id="trapWord" class="big"></div><div id="trapTrans" class="translation"></div>
+    <div id="trapHint" class="callout" style="margin-top:12px"></div>
+    <div class="grid2" style="margin-top:12px"><button id="speakNormal">🔊 Normal</button><button id="speakSlow">🐢 Langsam</button></div>
+    <button id="speakSentence" style="width:100%;margin-top:10px">🔊 Im Satz hören</button>
+    <div class="grid2" style="margin-top:10px"><button id="trapPrev">← Zurück</button><button id="trapNext">Weiter →</button></div>
+  </div>
+</section>
+
+<section id="words" class="panel">
+  <h2>🎒 Loot Words</h2>
+  <div class="grid2">
+    <label>Kategorie<br><select id="category" style="width:100%;margin-top:5px"><option value="gaming">Gaming</option><option value="everyday">Alltag</option><option value="school">Schule</option><option value="creator">Creator</option></select></label>
+    <label>Modus<br><select id="wordMode" style="width:100%;margin-top:5px"><option value="learn">Lernen</option><option value="quiz">Mini-Quiz</option></select></label>
+  </div><div id="wordBox" class="card"></div>
+</section>
+
+<section id="build" class="panel">
+  <h2>🧱 Build the Sentence</h2>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+      <div class="muted">Baue auf Englisch:</div><button id="buildHelp" class="help">💡 Hilfe</button>
+    </div>
+    <div id="buildMeaning" class="big" style="font-size:1.3rem"></div><div id="buildMeaningRu" class="muted"></div>
+    <div id="buildHelpBox" class="helpbox"></div>
+    <div id="buildAnswer" class="answer"></div><div id="buildPieces"></div>
+    <div class="grid2" style="margin-top:12px"><button id="buildReset">Neu bauen</button><button id="buildCheck" class="primary">Prüfen</button></div>
+    <div id="buildFeedback" style="margin-top:10px"></div>
+  </div>
+</section>
+
+<section id="creator" class="panel">
+  <h2>📹 Creator Challenge</h2><p class="muted">Schnelle Reaktionsfragen im Challenge-Video-Stil.</p>
+  <div class="card"><span id="creatorMode" class="badge"></span><div id="creatorPrompt" class="callout" style="margin-top:12px"></div>
+  <button id="creatorAudio" style="width:100%;margin-top:10px">🔊 Satz hören</button><div id="creatorChoices" style="margin-top:10px"></div>
+  <div id="creatorFeedback" style="margin-top:10px"></div><button id="creatorNext" class="primary" style="width:100%;margin-top:12px">Neue Challenge</button></div>
+</section>
+
+<section id="boss" class="panel">
+  <h2>👾 Boss Battle</h2><div class="card"><div style="font-size:4rem;text-align:center">👾</div><div style="text-align:center"><b>English Boredom Boss</b></div>
+  <div class="progress" style="margin-top:10px"><div id="bossProgress"></div></div><div id="bossPrompt" class="callout" style="margin-top:14px"></div>
+  <button id="bossAudio" style="width:100%;margin-top:10px">🔊 Wort hören</button><div id="bossChoices" class="grid2" style="margin-top:10px"></div>
+  <div id="bossFeedback" style="margin-top:10px"></div><button id="bossRestart" style="width:100%;margin-top:12px">Boss neu starten</button></div>
+</section>
+
+<footer>Fortschritt wird lokal in diesem Browser gespeichert.</footer>
+</main>
+<script>
+const bank=VOCAB_BANK,traps=PRONUNCIATION_TRAPS,builds=SENTENCE_BUILDS,creatorChallenges=CREATOR_CHALLENGES;
+let state=JSON.parse(localStorage.getItem('englishQuestStateV2')||'{"xp":0,"streak":0,"trapIndex":0,"wordIndex":0,"buildIndex":0,"creatorIndex":0}');
+let dailyIndex=0,dailyWords=[],buildSelected=[],bossHP=5,bossTarget=null;
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem('englishQuestStateV2',JSON.stringify(state));updateStats()}
+function updateStats(){$('xp').textContent=state.xp||0;$('level').textContent=Math.floor((state.xp||0)/100)+1;$('streak').textContent=state.streak||0}
+function reward(n){state.xp=(state.xp||0)+n;state.streak=(state.streak||0)+1;save()} function miss(){state.streak=0;save()}
+function speak(text,rate=.88){if(!('speechSynthesis'in window)){alert('Keine Sprachausgabe in diesem Browser.');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=rate;const v=speechSynthesis.getVoices();const en=v.find(x=>/^en-US/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang));if(en)u.voice=en;speechSynthesis.speak(u)}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+function trans(w){return `<span>🇩🇪 ${w.de}</span><span>🇷🇺 ${w.ru}</span>`}
+
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));$(b.dataset.tab).classList.add('active');document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('primary'));b.classList.add('primary')});
+
+function dailySet(){const d=new Date();let seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();const all=[...bank.gaming,...bank.everyday,...bank.school,...bank.creator],p=[];while(p.length<5){seed=(seed*9301+49297)%233280;const w=all[seed%all.length];if(!p.some(x=>x.en===w.en))p.push(w)}return p}
+function dailyPreview(){dailyWords=dailySet();$('dailyBox').innerHTML='<b>Heute:</b><br>'+dailyWords.map(w=>w.icon+' '+w.en).join(' · ')+'<p class="muted">Heute wird vor allem gehört.</p>'}
+function dailyQ(){if(dailyIndex>=5){$('dailyBox').innerHTML='<div class="big">🏆 Victory Royale!</div><div class="muted">Quest geschafft. Genug für heute.</div>';$('dailyProgress').style.width='100%';return}const t=dailyWords[dailyIndex],all=[...bank.gaming,...bank.everyday,...bank.school,...bank.creator],opts=[t];while(opts.length<4){const r=all[Math.floor(Math.random()*all.length)];if(!opts.some(x=>x.en===r.en))opts.push(r)}$('dailyBox').innerHTML='<span class="badge">Aufgabe '+(dailyIndex+1)+'/5</span><div class="big">🎧 Welches Wort hörst du?</div><button id="dqAudio" style="width:100%">🔊 Anhören</button><div id="dqChoices" class="grid2" style="margin-top:10px"></div><div id="dqFb" style="margin-top:10px"></div>';$('dqAudio').onclick=()=>speak(t.en,.8);shuffle(opts).forEach(o=>{const b=document.createElement('button');b.textContent=o.en;b.onclick=()=>{if(o.en===t.en){reward(10);$('dqFb').innerHTML='✓ '+t.en+' · 🇩🇪 '+t.de+' · 🇷🇺 '+t.ru+' · +10 XP';dailyIndex++;$('dailyProgress').style.width=(dailyIndex/5*100)+'%';setTimeout(dailyQ,500)}else{miss();$('dqFb').textContent='Noch nicht. Hör noch einmal.';speak(t.en,.6)}};$('dqChoices').appendChild(b)});speak(t.en,.8)}
+$('dailyStart').onclick=()=>{dailyIndex=0;$('dailyProgress').style.width='0%';dailyQ()};
+
+function renderTrap(){const t=traps[state.trapIndex%traps.length];$('trapIcon').textContent=t.icon;$('trapWord').textContent=t.en;$('trapTrans').innerHTML=trans(t);$('trapHint').textContent=t.hint}
+$('speakNormal').onclick=()=>speak(traps[state.trapIndex%traps.length].en,.88);$('speakSlow').onclick=()=>speak(traps[state.trapIndex%traps.length].en,.55);$('speakSentence').onclick=()=>speak(traps[state.trapIndex%traps.length].s,.78);
+$('trapNext').onclick=()=>{state.trapIndex=(state.trapIndex+1)%traps.length;save();renderTrap()};$('trapPrev').onclick=()=>{state.trapIndex=(state.trapIndex-1+traps.length)%traps.length;save();renderTrap()};
+
+function renderWord(){const arr=bank[$('category').value],w=arr[state.wordIndex%arr.length];if($('wordMode').value==='learn'){$('wordBox').innerHTML='<div style="font-size:2.8rem">'+w.icon+'</div><div class="big">'+w.en+'</div><div class="translation">'+trans(w)+'</div><button id="wa" style="width:100%;margin-top:10px">🔊 Wort hören</button><div class="callout" style="margin-top:10px">'+w.s+'</div><button id="sa" style="width:100%;margin-top:10px">🔊 Satz hören</button><button id="nw" class="primary" style="width:100%;margin-top:10px">Nächstes Wort</button>';$('wa').onclick=()=>speak(w.en,.82);$('sa').onclick=()=>speak(w.s,.78);$('nw').onclick=()=>{state.wordIndex=(state.wordIndex+1)%arr.length;save();renderWord()}}else{const opts=[w];while(opts.length<Math.min(4,arr.length)){const r=arr[Math.floor(Math.random()*arr.length)];if(!opts.some(x=>x.en===r.en))opts.push(r)}$('wordBox').innerHTML='<div class="big">'+w.de+' / '+w.ru+'</div><div class="muted">Was heißt das auf Englisch?</div><div id="wq"></div><div id="wfb"></div>';shuffle(opts).forEach(o=>{const b=document.createElement('button');b.className='choice';b.textContent=o.en;b.onclick=()=>{if(o.en===w.en){reward(10);$('wfb').textContent='✓ +10 XP';state.wordIndex=(state.wordIndex+1)%arr.length;save();setTimeout(renderWord,450)}else{miss();$('wfb').textContent='Nope. Noch einmal.'}};$('wq').appendChild(b)})}}
+$('category').onchange=()=>{state.wordIndex=0;save();renderWord()};$('wordMode').onchange=renderWord;
+
+function renderBuild(){buildSelected=[];const q=builds[state.buildIndex%builds.length];$('buildMeaning').textContent=q.de;$('buildMeaningRu').textContent='🇷🇺 '+q.ru;$('buildAnswer').textContent='';$('buildPieces').innerHTML='';$('buildFeedback').textContent='';$('buildHelpBox').style.display='none';$('buildHelpBox').innerHTML='💡 '+q.help;shuffle(q.en.replace(/[.!?]/g,'').split(' ')).forEach(w=>{const b=document.createElement('button');b.textContent=w;b.className='piece';b.onclick=()=>{buildSelected.push(w);b.disabled=true;$('buildAnswer').textContent=buildSelected.join(' ')};$('buildPieces').appendChild(b)})}
+$('buildHelp').onclick=()=>{$('buildHelpBox').style.display=$('buildHelpBox').style.display==='block'?'none':'block'};
+$('buildReset').onclick=renderBuild;$('buildCheck').onclick=()=>{const q=builds[state.buildIndex%builds.length],clean=q.en.replace(/[.!?]/g,'');if(buildSelected.join(' ')===clean){reward(15);$('buildFeedback').textContent='✓ Perfekt! +15 XP';speak(q.en,.8);state.buildIndex=(state.buildIndex+1)%builds.length;save();setTimeout(renderBuild,650)}else{miss();$('buildFeedback').textContent='Noch nicht. Nutze notfalls 💡 Hilfe.'}};
+
+function renderCreator(){const q=creatorChallenges[state.creatorIndex%creatorChallenges.length];$('creatorMode').textContent=q.mode;$('creatorPrompt').textContent=q.prompt;$('creatorChoices').innerHTML='';$('creatorFeedback').textContent='';q.options.forEach(o=>{const b=document.createElement('button');b.className='choice';b.textContent=o;b.onclick=()=>{if(o===q.correct){reward(20);$('creatorFeedback').textContent='⚡ Richtig! +20 XP'}else{miss();$('creatorFeedback').textContent='Nope 😄 Versuch noch einmal.'}};$('creatorChoices').appendChild(b)})}
+$('creatorAudio').onclick=()=>speak(creatorChallenges[state.creatorIndex%creatorChallenges.length].audio,.84);$('creatorNext').onclick=()=>{state.creatorIndex=(state.creatorIndex+1)%creatorChallenges.length;save();renderCreator()};
+
+function renderBoss(){const all=[...bank.gaming,...bank.everyday,...bank.school,...bank.creator];bossTarget=all[Math.floor(Math.random()*all.length)];$('bossPrompt').innerHTML='Welches englische Wort bedeutet:<br>🇩🇪 <b>'+bossTarget.de+'</b> · 🇷🇺 <b>'+bossTarget.ru+'</b>?';$('bossChoices').innerHTML='';$('bossFeedback').textContent='';const opts=[bossTarget];while(opts.length<4){const r=all[Math.floor(Math.random()*all.length)];if(!opts.some(x=>x.en===r.en))opts.push(r)}shuffle(opts).forEach(o=>{const b=document.createElement('button');b.textContent=o.en;b.onclick=()=>{if(o.en===bossTarget.en){bossHP--;reward(15);$('bossProgress').style.width=((5-bossHP)/5*100)+'%';$('bossFeedback').textContent='💥 Treffer!';if(bossHP<=0){$('bossFeedback').textContent='🏆 Victory Royale! Boss besiegt!';$('bossChoices').innerHTML=''}else setTimeout(renderBoss,450)}else{miss();$('bossFeedback').textContent='Boss blockt. Versuch nochmal.'}};$('bossChoices').appendChild(b)})}
+$('bossAudio').onclick=()=>speak(bossTarget?bossTarget.en:'ready',.78);$('bossRestart').onclick=()=>{bossHP=5;$('bossProgress').style.width='0%';renderBoss()};
+
+updateStats();dailyPreview();renderTrap();renderWord();renderBuild();renderCreator();renderBoss();
+</script>
+</body>
+</html>
