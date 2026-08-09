@@ -24,6 +24,7 @@
 - Änderungen dürfen bestehende Übungen, lokale Fortschrittsdaten und die Browser-Sprachausgabe nicht beeinträchtigen.
 - Aussprache-Erklärungen in Listen & Repeat werden nur auf Russisch angezeigt.
 - Russische Aussprache-Erklärungen müssen durch Anklicken mit russischer Sprachausgabe vorgelesen werden können.
-- Russische Aussprache-Erklärungen müssen für TTS optimiert sein und dürfen keine Anführungszeichen oder unnötigen Klammern um auszusprechende Laute enthalten.
+- Russische Aussprache-Erklärungen müssen für TTS optimiert sein.
+- In `hint_ru` dürfen Aussprachebeispiele niemals in Anführungszeichen, Guillemets oder Klammern stehen. TTS-relevante Laute müssen als normaler Text ohne Einrahmung geschrieben werden.
 - Beim Klick auf „Im Satz hören“ wird der englische Satz gesprochen und gleichzeitig mit deutscher und russischer Übersetzung eingeblendet.
 - Beim Wortwechsel wird der eingeblendete Satz wieder verborgen.
