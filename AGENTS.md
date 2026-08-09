@@ -28,3 +28,8 @@
 - In `hint_ru` dürfen Aussprachebeispiele niemals in Anführungszeichen, Guillemets oder Klammern stehen. TTS-relevante Laute müssen als normaler Text ohne Einrahmung geschrieben werden.
 - Beim Klick auf „Im Satz hören“ wird der englische Satz gesprochen und gleichzeitig mit deutscher und russischer Übersetzung eingeblendet.
 - Beim Wortwechsel wird der eingeblendete Satz wieder verborgen.
+- English Quest speichert den Lernfortschritt jedes Wortes.
+- Wörter besitzen die Lernstufen Neu, Üben und Sicher.
+- Neue und schwierige Wörter werden häufiger wiederholt als sichere Wörter.
+- Sichere Wörter bleiben gelegentlich in der Wiederholung.
+- Neue Funktionen dürfen vorhandenen Lernfortschritt in localStorage nicht ohne Migration oder ausdrücklichen Reset löschen.
