@@ -22,3 +22,7 @@
 - Das bestehende Battle-Royale-inspirierte Design muss erhalten bleiben.
 - Inhalte und Konfiguration gehören nach Möglichkeit in `data.js`; `index.html` enthält Darstellung und Anwendungslogik.
 - Änderungen dürfen bestehende Übungen, lokale Fortschrittsdaten und die Browser-Sprachausgabe nicht beeinträchtigen.
+- Aussprache-Erklärungen in Listen & Repeat werden nur auf Russisch angezeigt.
+- Russische Aussprache-Erklärungen müssen durch Anklicken mit russischer Sprachausgabe vorgelesen werden können.
+- Beim Klick auf „Im Satz hören“ wird der englische Satz gesprochen und gleichzeitig mit deutscher und russischer Übersetzung eingeblendet.
+- Beim Wortwechsel wird der eingeblendete Satz wieder verborgen.
