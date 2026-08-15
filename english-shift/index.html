@@ -36,8 +36,9 @@ let S=JSON.parse(localStorage.getItem('eshift')||'{"xp":0,"sessions":0,"correct"
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const norm=s=>String(s||'').toLowerCase().replace(/[’']/g,"'").replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim();
 function lev(a,b){a=norm(a);b=norm(b);const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,i)=>i),c=new Array(n+1);for(let i=1;i<=m;i++){c[0]=i;for(let j=1;j<=n;j++)c[j]=Math.min(c[j-1]+1,p[j]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));[p,c]=[c,p]}return p[n]}
-function closeEnough(a,b,limit=.08){const x=norm(a),y=norm(b),d=lev(x,y);return d/Math.max(1,x.length,y.length)<=limit}
-function accepted(e,user){const list=[e.best,...(Array.isArray(e.accepted)?e.accepted:[])].filter(Boolean);return list.some(x=>norm(x)===norm(user)||closeEnough(x,user,e.type==='listen'?.06:.08))}
+function closeEnough(a,b,limit=.04){const x=norm(a),y=norm(b),d=lev(x,y);return d/Math.max(1,x.length,y.length)<=limit}
+function accepted(e,user){const list=[e.best,...(Array.isArray(e.accepted)?e.accepted:[])].filter(Boolean);return list.some(x=>norm(x)===norm(user)||closeEnough(x,user,e.type==='listen'?.05:.04))}
+function clientGrammarRule(user){const a=String(user||'');const duration='(?:\\d+|a|an|one|two|three|four|five|six|seven|eight|nine|ten|several|many|few|a\\s+couple\\s+of|couple\\s+of)\\s+(?:seconds?|minutes?|hours?|days?|weeks?|months?|years?)';if(new RegExp('\\bsince\\s+(?:about\\s+|almost\\s+|nearly\\s+)?'+duration+'\\b','i').test(a))return{correct:false,feedback:'Bei einer Zeitdauer heißt es „for“, nicht „since“: for two hours.',better:a.replace(/\\bsince\\s+/i,'for ')};return null}
 function save(){recalcLevel();localStorage.setItem('eshift',JSON.stringify(S))}
 function recalcLevel(){if(S.total<20)return;const a=S.correct/S.total;if(S.total>=120&&a>=.84)S.level='C1';else if(S.total>=70&&a>=.82)S.level='B2+';else if(S.total>=35&&a>=.78)S.level='B2';else S.level='B1+'}
 function weak(){return[...T].sort((a,b)=>{let A=S.grammar[a]||{c:0,n:0},B=S.grammar[b]||{c:0,n:0};return(A.n?A.c/A.n:.64)-(B.n?B.c/B.n:.64)})}
@@ -46,7 +47,29 @@ function dash(){$('#level').textContent=S.level;$('#xp').textContent=S.xp;$('#se
 function start(a,source='local'){Q=[...a];i=0;SESSION_SOURCE=source;view('train');render()}
 function render(){if(i>=Q.length){S.sessions++;save();$('#host').innerHTML=`<div class="q" style="text-align:center"><div class="prompt">✓ Shift complete</div><div class="muted">${SESSION_SOURCE==='ai'?'Adaptive AI-Session abgeschlossen. Deine Ergebnisse fließen in die nächste Session ein.':'Fortschritt gespeichert.'}</div><button id="done" class="primary" style="margin-top:18px">Dashboard</button></div>`;$('#done').onclick=()=>view('home');return}sel=null;let e=Q[i];$('#count').textContent=`${i+1}/${Q.length}`;$('#prog').style.width=`${i/Q.length*100}%`;let h=`<div class="q"><div class="tag">${SESSION_SOURCE==='ai'?'AI · ':''}${e.type} · ${e.tense}</div><div class="prompt">${e.prompt}</div>`;if(e.type==='mcq')h+=`<div class="options">${e.options.map((o,n)=>`<button class="option" data-n="${n}">${o}</button>`).join('')}</div>`;else{if(e.type==='listen')h+='<button id="listen">🔊 Listen</button>';h+='<input id="ans" autocomplete="off" placeholder="Your answer…">'}h+='<div id="fb"></div></div><div class="row" style="justify-content:flex-end;margin-top:10px"><button id="check" class="primary">Check →</button></div>';$('#host').innerHTML=h;$$('.option').forEach(b=>b.onclick=()=>{sel=+b.dataset.n;$$('.option').forEach(x=>x.classList.toggle('sel',x===b))});if($('#listen'))$('#listen').onclick=()=>speak(e.audio);if($('#ans'))$('#ans').addEventListener('keydown',ev=>{if(ev.key==='Enter')$('#check').click()});$('#check').onclick=check}
 function speak(t){if(!('speechSynthesis'in window))return alert('Sprachausgabe wird von diesem Browser nicht unterstützt.');let u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}
-function check(){let e=Q[i],user='',ok=false;if(e.type==='mcq'){if(sel===null)return;user=e.options[sel];ok=sel===e.answer}else{user=$('#ans').value.trim();if(!user)return;ok=accepted(e,user)}S.total++;if(ok){S.correct++;S.xp+=10}else S.xp+=2;let g=S.grammar[e.tense]||{c:0,n:0};g.n++;if(ok)g.c++;S.grammar[e.tense]=g;save();if(e.type==='mcq')$$('.option').forEach((x,n)=>{x.classList.remove('sel');if(n===e.answer)x.classList.add('good');else if(n===sel)x.classList.add('bad')});$('#fb').className='fb '+(ok?'goodfb':'badfb');$('#fb').innerHTML=`<b>${ok?'✓ Nice.':'Not quite.'}</b><br>${e.explain||''}${!ok?`<br><b>Natural:</b> ${e.best}`:''}`;$('#check').textContent=i===Q.length-1?'Finish':'Next →';$('#check').onclick=()=>{i++;render()}}
+async function check(){
+ let e=Q[i],user='',ok=false,feedback='',better=e.best||'';
+ if(e.type==='mcq'){if(sel===null)return;user=e.options[sel];ok=sel===e.answer}
+ else{
+   user=$('#ans').value.trim();if(!user)return;
+   const hard=clientGrammarRule(user);
+   if(hard){ok=false;feedback=hard.feedback;better=hard.better||better}
+   else if(e.type==='translate'&&AI){
+     const btn=$('#check');btn.disabled=true;btn.textContent='AI prüft…';
+     try{
+       const r=await fetch('/api/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({exercise:e,answer:user,level:S.level})});
+       const j=await r.json();
+       if(!r.ok)throw new Error(j.message||j.error||'evaluation failed');
+       ok=j.correct===true;feedback=j.feedback||'';better=j.better||better;
+     }catch(err){console.error('AI evaluation failed',err);ok=accepted(e,user);feedback='KI-Prüfung war kurz nicht erreichbar; lokale Kontrolle verwendet.'}
+     finally{btn.disabled=false}
+   }else ok=accepted(e,user)
+ }
+ S.total++;if(ok){S.correct++;S.xp+=10}else S.xp+=2;let g=S.grammar[e.tense]||{c:0,n:0};g.n++;if(ok)g.c++;S.grammar[e.tense]=g;save();
+ if(e.type==='mcq')$$('.option').forEach((x,n)=>{x.classList.remove('sel');if(n===e.answer)x.classList.add('good');else if(n===sel)x.classList.add('bad')});
+ $('#fb').className='fb '+(ok?'goodfb':'badfb');$('#fb').innerHTML=`<b>${ok?'✓ Nice.':'Not quite.'}</b><br>${feedback||e.explain||''}${!ok&&better?`<br><b>Natural:</b> ${better}`:''}`;
+ $('#check').disabled=false;$('#check').textContent=i===Q.length-1?'Finish':'Next →';$('#check').onclick=()=>{i++;render()}
+}
 function words(){$('#wordsbox').innerHTML=V.map(([w,d])=>`<div class="card"><b>${w}</b><br><span class="muted">${d}</span></div>`).join('')}
 function progress(){$('#grammar').innerHTML=T.map(t=>{let g=S.grammar[t]||{c:0,n:0},p=g.n?Math.round(g.c/g.n*100):0;return `<div class="card"><b>${t}</b><span style="float:right">${g.n?p+'%':'—'}</span><div class="bar"><i style="width:${p}%"></i></div></div>`}).join('')}
 async function health(){try{let r=await fetch('/api/health',{cache:'no-store'}),j=await r.json();AI=!!j.ai;AIMODEL=j.model||''}catch(_){AI=false}$('#dot').classList.toggle('on',AI);$('#dot').classList.toggle('err',!AI);$('#status').textContent=AI?'AI konfiguriert':'AI offline';$('#aiNote').textContent=AI?`OpenAI · ${AIMODEL.replace('openai/','')} · via Vercel AI Gateway`:'Lokaler Daily Shift bleibt verfügbar.'}
