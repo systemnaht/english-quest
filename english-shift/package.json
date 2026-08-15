@@ -1,6 +1,7 @@
 {
-  "name":"english-shift",
-  "version":"1.0.0",
-  "private":true,
-  "engines":{"node":"24.x"}
+  "name": "english-shift",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Adaptive English trainer deployed on Vercel with AI Gateway",
+  "engines": { "node": "24.x" }
 }
