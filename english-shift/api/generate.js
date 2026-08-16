@@ -8,6 +8,7 @@ export default async function handler(req,res){
   const b=req.body||{};
   const level=b.profile?.estimatedLevel||b.profile?.level||b.level||'B1+';
   const weak=Array.isArray(b.weakTenses)?b.weakTenses:Array.isArray(b.weak)?b.weak:[];
+  const recent=Array.isArray(b.recentErrors)?b.recentErrors.slice(0,6):[];
   const length=Math.max(5,Math.min(10,Number(b.length)||8));
   const mode=['adaptive','grammar','listening'].includes(b.mode)?b.mode:'adaptive';
   const focus=String(b.focus||weak[0]||'mixed grammar').slice(0,80);
@@ -16,15 +17,32 @@ export default async function handler(req,res){
   if(mode==='grammar') modeInstruction=`This is a focused grammar drill on ${focus}. Use mostly MCQ and German-to-English translation. Every item must genuinely test ${focus}; do not drift into unrelated grammar.`;
   if(mode==='listening') modeInstruction='This is a listening sprint. Every exercise MUST have type="listen". Put one natural spoken-English sentence in audio; prompt should be "Listen and type what you hear." Use contractions and realistic everyday phrases appropriate to the level.';
 
-  const prompt=`Create ${length} English-learning exercises for a German-speaking learner at ${level}.
+  const recentText=recent.map(x=>({tense:x.tense,prompt:x.prompt,user:x.user,best:x.best}));
+  const prompt=`Create a scaffolded English-learning session for a German-speaking learner at ${level}.
 Mode: ${mode}. Focus: ${focus}. Weak areas: ${weak.join(', ')||'mixed grammar'}.
+Recent learner errors: ${JSON.stringify(recentText).slice(0,2500)}
 ${modeInstruction}
-Return ONLY valid JSON with this exact top-level shape: {"exercises":[...]}.
-Each item must contain: type (mcq|translate|listen), tense, prompt, options, answer, best, accepted, explain, audio.
-For mcq: exactly 4 options and answer is an integer 0-3.
-For translate: options=[], answer=-1, best is the best natural English answer, accepted contains valid alternatives.
-For listen: options=[], answer=-1, audio is the exact spoken sentence, best is the transcript, accepted may contain contraction variants.
-Use natural current everyday English, useful chunks and concise German explanations. No markdown.`;
+
+The session must teach before it tests, but NEVER reveal an exercise answer in the warm-up.
+Return ONLY valid JSON with this exact top-level shape:
+{"warmup":[{"title":"...","meaning":"...","example":"..."}],"exercises":[...]}
+
+WARM-UP RULES:
+- Give exactly 3 short preparation items.
+- Each item teaches a useful grammar idea or everyday chunk that will help in the upcoming session.
+- Use a DIFFERENT example sentence from every exercise prompt, audio, best answer and accepted answer.
+- Do not copy or paraphrase a full exercise answer.
+
+Each exercise must contain: type (mcq|translate|listen), tense, prompt, options, answer, best, accepted, explain, audio, hints, blocks.
+- hints must be an array of exactly 3 progressively stronger German hints:
+  1) conceptual grammar/time clue, without giving the answer;
+  2) vocabulary/chunk clue, without giving the full sentence;
+  3) a sentence scaffold with blanks, still not the complete answer.
+- blocks must be 3-6 short English phrase blocks that together can form the best answer. These are the fourth help stage, so they may contain the answer in chunks.
+- For mcq: exactly 4 options and answer is an integer 0-3.
+- For translate: options=[], answer=-1, best is the best natural English answer, accepted contains valid alternatives.
+- For listen: options=[], answer=-1, audio is the exact spoken sentence, best is the transcript, accepted may contain contraction variants.
+Use natural current everyday English and concise German explanations. No markdown.`;
 
   try{
     const r=await fetch(URL,{method:'POST',headers:{Authorization:`Bearer ${process.env.AI_GATEWAY_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({model:'openai/gpt-5-mini',messages:[{role:'user',content:prompt}],stream:false})});
@@ -36,6 +54,9 @@ Use natural current everyday English, useful chunks and concise German explanati
     const j=JSON.parse(clean);
     if(!Array.isArray(j.exercises)||!j.exercises.length)throw new Error('no exercises');
 
+    const warmup=(Array.isArray(j.warmup)?j.warmup:[]).slice(0,3).map(w=>({
+      title:String(w.title||'Baustein'),meaning:String(w.meaning||''),example:String(w.example||'')
+    }));
     const exercises=j.exercises.slice(0,length).map(e=>({
       type:['mcq','translate','listen'].includes(e.type)?e.type:'translate',
       tense:String(e.tense||focus||'Mixed'),
@@ -45,9 +66,11 @@ Use natural current everyday English, useful chunks and concise German explanati
       best:String(e.best||''),
       accepted:Array.isArray(e.accepted)?e.accepted.map(String):[],
       explain:String(e.explain||''),
-      audio:String(e.audio||'')
+      audio:String(e.audio||''),
+      hints:Array.isArray(e.hints)?e.hints.slice(0,3).map(String):[],
+      blocks:Array.isArray(e.blocks)?e.blocks.slice(0,6).map(String):[]
     }));
 
-    return res.status(200).json({exercises,model:out.model||'openai/gpt-5-mini',mode,focus});
+    return res.status(200).json({warmup,exercises,model:out.model||'openai/gpt-5-mini',mode,focus});
   }catch(e){return res.status(500).json({error:'generation',message:String(e.message||e)})}
 }
