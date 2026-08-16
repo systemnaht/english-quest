@@ -121,7 +121,7 @@ const SEED_WORDS=[
 const DEFAULT={xp:0,sessions:0,correct:0,total:0,level:'B1+',grammar:{},vocab:{},personalWords:[],errors:[]};
 let raw={};try{raw=JSON.parse(localStorage.getItem('eshift')||'{}')}catch(_){}
 let S={...DEFAULT,...raw,grammar:raw.grammar||{},vocab:raw.vocab||{},personalWords:Array.isArray(raw.personalWords)?raw.personalWords:[],errors:Array.isArray(raw.errors)?raw.errors:[]};
-let Q=[],i=0,sel=null,AI=false,AIMODEL='',SESSION_SOURCE='local',RETURN_VIEW='learn',WORD_FILTER='all',SESSION_RECORDED=false;
+let Q=[],i=0,sel=null,AI=false,AIMODEL='',SESSION_SOURCE='local',RETURN_VIEW='learn',WORD_FILTER='all',SESSION_RECORDED=false,AI_REQUEST_IN_FLIGHT=false;
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const norm=s=>String(s||'').toLowerCase().replace(/[’']/g,"'").replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim();
 function lev(a,b){a=norm(a);b=norm(b);const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,i)=>i),c=new Array(n+1);for(let x=1;x<=m;x++){c[0]=x;for(let y=1;y<=n;y++)c[y]=Math.min(c[y-1]+1,p[y]+1,p[y-1]+(a[x-1]===b[y-1]?0:1));[p,c]=[c,p]}return p[n]}
@@ -180,12 +180,26 @@ function record(e,user,ok,feedback,better){
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
 function dailyMix(){const pool=shuffled([...BASE,...GRAMMAR_EXTRA]);const core=pool.slice(0,6);const listen=shuffled(LISTEN).slice(0,2);start(shuffled([...core,...listen]),'local','learn')}
+function setAiButtonsDisabled(disabled){['#recommended','#ai','#grammarStart','#listeningStart'].forEach(s=>{const b=$(s);if(b)b.disabled=disabled})}
 async function aiSession(mode='adaptive',focus=''){
- if(!AI){await health();if(!AI){alert('AI ist gerade nicht erreichbar. Ich starte stattdessen einen lokalen Daily Mix.');return dailyMix()}}
- const button=mode==='adaptive'?$('#ai'):mode==='grammar'?$('#grammarStart'):$('#listeningStart');const old=button.textContent;button.disabled=true;button.innerHTML='<span class="spin">↻</span> Wird erstellt…';
- try{const payload={profile:{level:S.level,estimatedLevel:S.level},weakTenses:weak().slice(0,5),grammar:S.grammar,length:8,mode,focus};const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const j=await r.json();if(!r.ok||!Array.isArray(j.exercises))throw Object.assign(new Error(j.message||j.error||'AI generation failed'),{status:r.status});$('#status').textContent='AI online';start(j.exercises,'ai','learn')}
- catch(err){console.error(err);if(err.status===429)alert('Das AI-Limit ist gerade erreicht. Ich starte eine lokale Alternative.');else alert('Die AI-Session konnte gerade nicht erzeugt werden. Ich starte eine lokale Alternative.');if(mode==='listening')start(shuffled(LISTEN).slice(0,6),'local','learn');else if(mode==='grammar')start(localGrammar(focus),'local','learn');else dailyMix()}
- finally{button.disabled=false;button.textContent=old}
+ if(AI_REQUEST_IN_FLIGHT)return;
+ AI_REQUEST_IN_FLIGHT=true;
+ if(!AI){await health();if(!AI){AI_REQUEST_IN_FLIGHT=false;alert('AI ist gerade nicht erreichbar. Ich starte stattdessen einen lokalen Daily Mix.');return dailyMix()}}
+ const button=mode==='adaptive'?$('#ai'):mode==='grammar'?$('#grammarStart'):$('#listeningStart');const old=button.textContent;setAiButtonsDisabled(true);button.innerHTML='<span class="spin">↻</span> Wird erstellt…';
+ try{
+  const payload={profile:{level:S.level,estimatedLevel:S.level},weakTenses:weak().slice(0,5),grammar:S.grammar,length:8,mode,focus};
+  const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const j=await r.json();
+  if(!r.ok||!Array.isArray(j.exercises))throw Object.assign(new Error(j.message||j.error||'AI generation failed'),{status:r.status});
+  $('#status').textContent='AI online';start(j.exercises,'ai','learn')
+ }catch(err){
+  console.error(err);
+  if(err.status===429){$('#status').textContent='AI kurz gedrosselt';alert('Die KI wurde gerade kurzfristig gedrosselt. Das ist kein kaputtes Projekt und bedeutet nicht automatisch, dass dein Guthaben verbraucht ist. Ich starte für diese Session eine lokale Alternative.')}
+  else alert('Die AI-Session konnte gerade nicht erzeugt werden. Ich starte eine lokale Alternative.');
+  if(mode==='listening')start(shuffled(LISTEN).slice(0,6),'local','learn');else if(mode==='grammar')start(localGrammar(focus),'local','learn');else dailyMix()
+ }finally{
+  AI_REQUEST_IN_FLIGHT=false;setAiButtonsDisabled(false);button.textContent=old
+ }
 }
 function localGrammar(focus){const pool=[...BASE,...GRAMMAR_EXTRA].filter(e=>e.tense===focus);const fallback=[...BASE,...GRAMMAR_EXTRA].filter(e=>e.type!=='listen');let a=pool.length?pool:fallback;while(a.length<6)a=[...a,...a];return shuffled(a).slice(0,6)}
 
@@ -203,7 +217,7 @@ function deleteWord(en){S.personalWords=S.personalWords.filter(w=>w.en!==en);del
 function vocabReview(){const due=allWords().filter(w=>isDue(w.en));const chosen=shuffled(due.length?due:allWords()).slice(0,Math.min(6,allWords().length));const translations=allWords().map(w=>w.de);const q=chosen.map(w=>{let opts=shuffled([w.de,...shuffled(translations.filter(d=>d!==w.de)).slice(0,3)]);while(opts.length<4)opts.push('—');return{type:'mcq',tense:'Vocabulary',prompt:`Was bedeutet „${w.en}“?`,options:opts,answer:opts.indexOf(w.de),best:w.de,accepted:[],explain:w.ex||'',audio:'',vocabWord:w.en}});start(q,'vocab','words')}
 
 function progress(){
- const levels=['B1+','B2','B2+','C1'],idx=Math.max(0,levels.indexOf(S.level));const next=idx<3?levels[idx+1]:'C1';const need=idx===0?35:idx===1?70:idx===2?120:120;
+ const levels=['B1+','B2','B2+','C1'],idx=Math.max(0,levels.indexOf(S.level));const next=idx<3?levels[idx+1]:'C1';
  $('#levelCard').innerHTML=`<div class="card"><div class="eyebrow">Aktuelles Arbeitsniveau</div><div style="font-size:32px;font-weight:900;margin-top:4px">${S.level}</div><div class="muted tiny">${S.total} Antworten · ${S.total?Math.round(S.correct/S.total*100):0}% korrekt${S.level!=='C1'?` · nächster Marker: ${next}`:''}</div><div class="leveltrack">${levels.map((l,n)=>`<div class="levelstep ${n<=idx?'on':''}"></div>`).join('')}</div><div class="tiny muted" style="margin-top:8px">Niveau steigt nicht nach einer einzelnen guten Session, sondern erst mit genügend Daten und stabiler Trefferquote.</div></div>`;
  $('#grammar').innerHTML=T.map(t=>{const g=S.grammar[t]||{c:0,n:0},p=g.n?Math.round(g.c/g.n*100):0;return `<div class="card"><b>${t}</b><span style="float:right">${g.n?p+'%':'—'}</span><div class="tiny muted">${g.n?`${g.c}/${g.n} richtig`:'noch keine Daten'}</div><div class="bar" style="margin-top:8px"><i style="width:${p}%"></i></div></div>`}).join('');
  $('#errors').innerHTML=S.errors.length?S.errors.slice(0,10).map(e=>`<div class="card errorcard"><b>${escapeHtml(e.tense)}</b><div class="tiny muted">${new Date(e.date).toLocaleDateString('de-DE')}</div><div style="margin-top:7px">${escapeHtml(e.prompt)}</div><div class="answer"><span class="muted">Deine Antwort:</span> ${escapeHtml(e.user||'—')}</div><div class="answer"><span class="muted">Besser:</span> <b>${escapeHtml(e.best||'—')}</b></div>${e.feedback?`<div class="tiny" style="margin-top:6px">${escapeHtml(e.feedback)}</div>`:''}</div>`).join(''):'<div class="card muted">Noch keine gespeicherten Fehler. Das ist entweder sehr gut oder noch sehr früh. 🙂</div>'
