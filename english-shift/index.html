@@ -1,78 +1,225 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f5f7fb">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f7fb">
 <title>English Shift</title>
 <style>
-:root{--bg:#f5f7fb;--ink:#182137;--muted:#788198;--line:#e2e6ef;--brand:#586be9;--good:#31b58e;--bad:#e45a6c;--card:#fff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{max-width:720px;margin:auto;padding:18px 14px 100px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:28px;font-weight:900;letter-spacing:-.8px}.brand b{color:var(--brand)}.pill,.card,button,input{border:1px solid var(--line);background:#fff;border-radius:16px}.pill{padding:8px 12px;font-size:13px;white-space:nowrap}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#aaa;margin-right:5px}.dot.on{background:var(--good)}.dot.err{background:var(--bad)}.card{padding:18px;margin:12px 0;box-shadow:0 12px 36px #26324c10}.hero{background:linear-gradient(145deg,#fff,#f0f3ff)}h1{font-size:34px;line-height:1.03;margin:13px 0}h3{margin-top:22px}.muted{color:var(--muted)}.row{display:flex;gap:8px;flex-wrap:wrap}button{padding:12px 14px;font-weight:800;cursor:pointer;color:var(--ink)}button:disabled{opacity:.55}.primary{background:var(--brand);color:white;border-color:var(--brand)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat b{font-size:21px}.stat small{display:block;color:var(--muted)}.view{display:none}.view.on{display:block}.q{min-height:380px;padding:22px;background:linear-gradient(145deg,#f8f9ff,#f2fbf7);border:1px solid var(--line);border-radius:20px;display:flex;flex-direction:column;justify-content:center}.tag{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}.prompt{font-size:24px;font-weight:850;margin:14px 0}.options{display:grid;gap:8px}.option{text-align:left}.option.sel{border-color:var(--brand);background:#eef0ff}.option.good{border-color:var(--good);background:#eaf9f4}.option.bad{border-color:var(--bad);background:#fff0f2}input{width:100%;padding:14px;font-size:16px}.fb{margin-top:12px;padding:12px;border-radius:14px}.goodfb{background:#eaf9f4}.badfb{background:#fff0f2}.bar{height:7px;background:#edf0f5;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--brand)}.tiny{font-size:12px}.bottom{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(560px,calc(100% - 24px));display:grid;grid-template-columns:repeat(4,1fr);background:#fffffff2;backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:20px;padding:6px;box-shadow:0 12px 40px #26324c20}.nav{border:0;background:transparent;padding:11px 6px}.nav.active{background:#eef0ff;color:var(--brand)}.spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:560px){.stats{grid-template-columns:1fr 1fr}h1{font-size:31px}.prompt{font-size:22px}.pill{font-size:12px}}
+:root{--bg:#f6f7fb;--ink:#172039;--muted:#7b8499;--line:#e3e7f0;--brand:#596beb;--brand2:#eef0ff;--good:#2db18a;--bad:#df5a6c;--card:#fff;--shadow:0 12px 36px #26324c10}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{max-width:720px;margin:auto;padding:18px 14px 108px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}.brand{font-size:29px;font-weight:900;letter-spacing:-1px}.brand b{color:var(--brand)}.pill,.card,button,input,select,textarea{border:1px solid var(--line);background:#fff;border-radius:16px}.pill{padding:8px 12px;font-size:13px;white-space:nowrap}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#aaa;margin-right:6px}.dot.on{background:var(--good)}.dot.err{background:var(--bad)}.card{padding:18px;margin:12px 0;box-shadow:var(--shadow)}.hero{background:linear-gradient(145deg,#fff,#f0f3ff)}h1{font-size:34px;line-height:1.04;margin:12px 0}h2{font-size:25px;margin:18px 0 8px}h3{font-size:19px;margin:20px 0 8px}.muted{color:var(--muted)}.tiny{font-size:12px}.eyebrow{font-size:12px;font-weight:900;color:var(--brand);letter-spacing:.7px;text-transform:uppercase}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}button{padding:12px 14px;font-weight:800;cursor:pointer;color:var(--ink)}button:disabled{opacity:.55}.primary{background:var(--brand);color:#fff;border-color:var(--brand)}.soft{background:var(--brand2);border-color:transparent;color:#4559d9}.danger{color:var(--bad)}.wide{width:100%}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{margin:0}.stat b{font-size:22px}.stat small{display:block;color:var(--muted);margin-top:2px}.view{display:none}.view.on{display:block}.modegrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mode{margin:0;min-height:175px;display:flex;flex-direction:column}.mode .icon{font-size:25px}.mode p{font-size:14px;color:var(--muted);margin:6px 0 14px;flex:1}.mode button{width:100%}.focuscard{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.bar{height:7px;background:#edf0f5;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--brand)}.q{min-height:390px;padding:22px;background:linear-gradient(145deg,#f8f9ff,#f2fbf7);border:1px solid var(--line);border-radius:20px;display:flex;flex-direction:column;justify-content:center}.tag{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}.prompt{font-size:24px;font-weight:850;margin:14px 0}.options{display:grid;gap:8px}.option{text-align:left}.option.sel{border-color:var(--brand);background:#eef0ff}.option.good{border-color:var(--good);background:#eaf9f4}.option.bad{border-color:var(--bad);background:#fff0f2}input,select,textarea{width:100%;padding:13px;font-size:16px;color:var(--ink)}textarea{min-height:76px;resize:vertical}.fb{margin-top:12px;padding:12px;border-radius:14px}.goodfb{background:#eaf9f4}.badfb{background:#fff0f2}.word{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}.word b{font-size:19px}.mastery{font-size:13px;color:var(--brand);letter-spacing:2px}.word-actions{display:flex;gap:6px}.word-actions button{padding:8px 10px}.tabs{display:flex;gap:7px;overflow:auto;padding-bottom:2px}.tab{white-space:nowrap;padding:9px 12px}.tab.active{background:var(--brand2);color:#4559d9;border-color:transparent}.addbox{display:grid;gap:8px}.errorcard{border-left:4px solid var(--bad)}.errorcard .answer{font-size:14px;margin-top:7px}.leveltrack{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:10px}.levelstep{height:9px;border-radius:10px;background:#e7e9f1}.levelstep.on{background:var(--brand)}.bottom{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(560px,calc(100% - 24px));display:grid;grid-template-columns:repeat(4,1fr);background:#fffffff2;backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:20px;padding:6px;box-shadow:0 12px 40px #26324c20;z-index:10}.nav{border:0;background:transparent;padding:11px 4px}.nav.active{background:var(--brand2);color:var(--brand)}.spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}details summary{cursor:pointer;font-weight:800}.spacer{height:8px}
+@media(max-width:560px){.stats{grid-template-columns:1fr 1fr}.modegrid{grid-template-columns:1fr}h1{font-size:31px}.prompt{font-size:22px}.pill{font-size:12px}.mode{min-height:0}.brand{font-size:27px}}
 </style>
-</head><body>
+</head>
+<body>
 <div class="app">
  <div class="top"><div class="brand">English <b>Shift</b></div><div class="pill"><span id="dot" class="dot"></span><span id="status">AI wird geprüft…</span></div></div>
+
  <section id="home" class="view on">
-  <div class="card hero"><small style="color:#586be9;font-weight:900">DAILY EVERYDAY ENGLISH</small><h1>Train real English.<br>Every single day.</h1><p class="muted">Gemischte Zeitformen, Alltagswortschatz, Listening und adaptive KI-Aufgaben — angepasst an deine Fehler.</p><div class="row"><button id="daily" class="primary">▶ Daily Shift</button><button id="ai">✦ Adaptive AI-Session</button></div><div id="aiNote" class="tiny muted" style="margin-top:10px"></div></div>
-  <div class="stats"><div class="card stat"><b id="level">B1+</b><small>Niveau</small></div><div class="card stat"><b id="xp">0</b><small>XP</small></div><div class="card stat"><b id="acc">—</b><small>Trefferquote</small></div><div class="card stat"><b id="sessions">0</b><small>Sessions</small></div></div><div id="focus"></div>
+  <div class="card hero">
+   <div class="eyebrow">Heute</div>
+   <h1>Dein nächster sinnvoller Shift.</h1>
+   <p id="todayText" class="muted">Ich berechne deinen Fokus aus deinen bisherigen Antworten.</p>
+   <button id="recommended" class="primary wide">▶ Empfohlenes Training starten</button>
+   <div id="aiNote" class="tiny muted" style="margin-top:10px"></div>
+  </div>
+  <div class="stats">
+   <div class="card stat"><b id="level">B1+</b><small>Niveau</small></div>
+   <div class="card stat"><b id="xp">0</b><small>XP</small></div>
+   <div class="card stat"><b id="acc">—</b><small>Trefferquote</small></div>
+   <div class="card stat"><b id="sessions">0</b><small>Sessions</small></div>
+  </div>
+  <div id="focus"></div>
+  <div class="card"><b>So ist der Trainer jetzt aufgebaut</b><p class="muted tiny">Heute = Empfehlung · Lernen = Trainingsarten · Wörter = aktive Wortschatzarbeit · Fortschritt = Fehler und Entwicklung.</p></div>
  </section>
- <section id="train" class="view"><div class="card"><div class="row"><button id="back">←</button><div class="bar" style="flex:1;align-self:center"><i id="prog"></i></div><span id="count" class="muted"></span></div><div id="host"></div></div></section>
- <section id="words" class="view"><h3>Active Vocabulary</h3><div id="wordsbox"></div></section>
- <section id="progress" class="view"><h3>Grammar Radar</h3><div id="grammar"></div></section>
+
+ <section id="learn" class="view">
+  <div class="eyebrow">Lernen</div><h2>Wähle, was du trainieren willst</h2>
+  <div class="modegrid">
+   <div class="card mode"><div class="icon">⚡</div><h3>Daily Mix</h3><p>8 kurze Aufgaben: gemischte Zeitformen, Alltagssprache und Übersetzung. Funktioniert auch ohne AI.</p><button id="daily" class="primary">Daily Mix starten</button></div>
+   <div class="card mode"><div class="icon">✦</div><h3>AI Adaptive</h3><p>8 neue Aufgaben, die dein Niveau, deine schwachen Zeitformen und deine bisherigen Fehler berücksichtigen.</p><button id="ai">Adaptive Session</button></div>
+   <div class="card mode"><div class="icon">◎</div><h3>Grammar Drill</h3><p>Konzentriert sich auf genau eine Zeitform. Standardmäßig ist deine aktuell schwächste vorausgewählt.</p><select id="grammarFocus"></select><div class="spacer"></div><button id="grammarStart">Grammar Drill</button></div>
+   <div class="card mode"><div class="icon">◖</div><h3>Listening Sprint</h3><p>Kurze natürliche Sätze hören und exakt erfassen. Kontraktionen und typische Alltagssprache inklusive.</p><button id="listeningStart">Listening starten</button></div>
+  </div>
+ </section>
+
+ <section id="train" class="view">
+  <div class="card">
+   <div class="row"><button id="back">←</button><div class="bar" style="flex:1"><i id="prog"></i></div><span id="count" class="muted"></span></div>
+   <div id="host"></div>
+  </div>
+ </section>
+
+ <section id="words" class="view">
+  <div class="eyebrow">Wörter</div><h2>Aktiver Wortschatz</h2>
+  <p class="muted">Nicht nur ansehen: hören, wiederholen und nach sicherem Gebrauch aus dem Review herauswachsen lassen.</p>
+  <div class="row"><button id="reviewWords" class="primary">↻ Fällige Wörter üben</button><span id="dueCount" class="pill">0 fällig</span></div>
+  <div class="tabs" style="margin-top:14px"><button class="tab active" data-filter="all">Alle</button><button class="tab" data-filter="due">Fällig</button><button class="tab" data-filter="own">Eigene</button></div>
+  <div id="wordsbox"></div>
+  <details class="card"><summary>＋ Eigenes Wort / Chunk hinzufügen</summary><div class="addbox" style="margin-top:12px"><input id="newEn" placeholder="Englisch, z. B. run into"><input id="newDe" placeholder="Deutsch"><textarea id="newEx" placeholder="Beispielsatz (optional)"></textarea><button id="addWord" class="primary">Speichern</button></div></details>
+ </section>
+
+ <section id="progress" class="view">
+  <div class="eyebrow">Fortschritt</div><h2>Was wird besser — und was nicht?</h2>
+  <div id="levelCard"></div>
+  <h3>Grammar Radar</h3><div id="grammar"></div>
+  <h3>Letzte Fehler</h3><div id="errors"></div>
+ </section>
 </div>
-<nav class="bottom"><button class="nav active" data-v="home">⌂ Heute</button><button class="nav" data-v="train">▶ Train</button><button class="nav" data-v="words">Aa Wörter</button><button class="nav" data-v="progress">⌁ Progress</button></nav>
+
+<nav class="bottom">
+ <button class="nav active" data-v="home">⌂ Heute</button>
+ <button class="nav" data-v="learn">▶ Lernen</button>
+ <button class="nav" data-v="words">Aa Wörter</button>
+ <button class="nav" data-v="progress">⌁ Fortschritt</button>
+</nav>
+
 <script>
 const BASE=[
-{type:'mcq',tense:'Past Simple',prompt:'Which is natural with “yesterday”?',options:['I have seen him yesterday.','I saw him yesterday.','I have saw him yesterday.','I was seeing him yesterday.'],answer:1,best:'I saw him yesterday.',accepted:[],explain:'Finished past time → Past Simple.',audio:''},
-{type:'translate',tense:'Future',prompt:'Sag natürlich: „Ich schaffe es wahrscheinlich nicht vor sechs.“',options:[],answer:-1,best:'I probably won’t make it before six.',accepted:['I probably won’t make it before six.','I probably won’t be able to make it before six.'],explain:'make it = es schaffen.',audio:''},
-{type:'mcq',tense:'Present Perfect',prompt:'Best answer to “Have you been here before?”',options:['Yes, I was here twice.','Yes, I’ve been here a couple of times.','Yes, I am here before.','Yes, I have been yesterday.'],answer:1,best:'Yes, I’ve been here a couple of times.',accepted:[],explain:'Experience → Present Perfect.',audio:''},
-{type:'listen',tense:'Present Perfect Continuous',prompt:'Listen and type what you hear.',options:[],answer:-1,audio:'I’ve been trying to reach customer service all morning.',best:'I’ve been trying to reach customer service all morning.',accepted:['I’ve been trying to reach customer service all morning.','I have been trying to reach customer service all morning.'],explain:'Ongoing activity up to now.'},
-{type:'mcq',tense:'Modal verbs',prompt:'Your neighbour is too loud. Choose the natural phrase.',options:['You must be quiet.','Could you keep it down a little, please?','Stop noises.','You should silence yourself.'],answer:1,best:'Could you keep it down a little, please?',accepted:[],explain:'keep it down = leiser sein.',audio:''},
-{type:'translate',tense:'Conditional',prompt:'Übersetze: „Wenn ich das gewusst hätte, wäre ich früher losgefahren.“',options:[],answer:-1,best:'If I’d known that, I would have left earlier.',accepted:['If I’d known that, I would have left earlier.','If I had known that, I would have left earlier.'],explain:'Third conditional.',audio:''},
-{type:'mcq',tense:'Mixed',prompt:'You are running late. Which text sounds most natural?',options:['I’m a bit behind. I’ll be there in ten.','I have lateness. Ten minutes.','I come later after ten.','I am delayed myself.'],answer:0,best:'I’m a bit behind. I’ll be there in ten.',accepted:[],explain:'A natural everyday way to say you are late.',audio:''},
-{type:'listen',tense:'Future',prompt:'Listen and type what you hear.',options:[],answer:-1,audio:'I’ll get back to you as soon as I hear anything.',best:'I’ll get back to you as soon as I hear anything.',accepted:['I’ll get back to you as soon as I hear anything.','I will get back to you as soon as I hear anything.'],explain:'get back to someone = sich zurückmelden.'}
+ {type:'mcq',tense:'Past Simple',prompt:'Which is natural with “yesterday”?',options:['I have seen him yesterday.','I saw him yesterday.','I have saw him yesterday.','I was seeing him yesterday.'],answer:1,best:'I saw him yesterday.',accepted:[],explain:'Finished past time → Past Simple.',audio:''},
+ {type:'translate',tense:'Future',prompt:'Übersetze natürlich: „Ich schaffe es wahrscheinlich nicht vor sechs.“',options:[],answer:-1,best:'I probably won’t make it before six.',accepted:['I probably won’t make it before six.','I probably won’t be able to make it before six.'],explain:'make it = es schaffen.',audio:''},
+ {type:'mcq',tense:'Present Perfect',prompt:'Best answer to “Have you been here before?”',options:['Yes, I was here twice.','Yes, I’ve been here a couple of times.','Yes, I am here before.','Yes, I have been yesterday.'],answer:1,best:'Yes, I’ve been here a couple of times.',accepted:[],explain:'Experience without a finished past time → Present Perfect.',audio:''},
+ {type:'mcq',tense:'Modal verbs',prompt:'Your neighbour is too loud. Choose the natural phrase.',options:['You must be quiet.','Could you keep it down a little, please?','Stop noises.','You should silence yourself.'],answer:1,best:'Could you keep it down a little, please?',accepted:[],explain:'keep it down = leiser sein.',audio:''},
+ {type:'translate',tense:'Conditional',prompt:'Übersetze: „Wenn ich das gewusst hätte, wäre ich früher losgefahren.“',options:[],answer:-1,best:'If I’d known that, I would have left earlier.',accepted:['If I’d known that, I would have left earlier.','If I had known that, I would have left earlier.'],explain:'Third conditional.',audio:''},
+ {type:'mcq',tense:'Mixed',prompt:'You are running late. Which text sounds most natural?',options:['I’m a bit behind. I’ll be there in ten.','I have lateness. Ten minutes.','I come later after ten.','I am delayed myself.'],answer:0,best:'I’m a bit behind. I’ll be there in ten.',accepted:[],explain:'A natural everyday way to say you are late.',audio:''},
+ {type:'translate',tense:'Present Perfect',prompt:'Übersetze: „Ich habe mein Handy seit zwei Stunden nicht finden können.“',options:[],answer:-1,best:'I haven’t been able to find my phone for two hours.',accepted:['I haven’t been able to find my phone for two hours.','I have not been able to find my phone for two hours.'],explain:'Present Perfect + for bei einer Zeitdauer.',audio:''},
+ {type:'mcq',tense:'Present Continuous',prompt:'Choose the natural sentence for something happening now.',options:['I wait for the bus.','I am waiting for the bus.','I have waited the bus.','I waiting for the bus.'],answer:1,best:'I am waiting for the bus.',accepted:[],explain:'Now / temporary action → Present Continuous.',audio:''},
+ {type:'translate',tense:'Past Perfect',prompt:'Übersetze: „Als ich ankam, war er schon gegangen.“',options:[],answer:-1,best:'When I arrived, he had already left.',accepted:['When I arrived, he had already left.','By the time I arrived, he had already left.'],explain:'Earlier past event → Past Perfect.',audio:''},
+ {type:'mcq',tense:'Present Simple',prompt:'Every morning Mark ___ coffee before work.',options:['drinks','is drinking','has drunk','drank'],answer:0,best:'Every morning Mark drinks coffee before work.',accepted:[],explain:'Routine → Present Simple.',audio:''}
 ];
+
+const LISTEN=[
+ {type:'listen',tense:'Present Perfect Continuous',prompt:'Listen and type what you hear.',options:[],answer:-1,audio:'I’ve been trying to reach customer service all morning.',best:'I’ve been trying to reach customer service all morning.',accepted:['I have been trying to reach customer service all morning.'],explain:'Ongoing activity up to now.'},
+ {type:'listen',tense:'Future',prompt:'Listen and type what you hear.',options:[],answer:-1,audio:'I’ll get back to you as soon as I hear anything.',best:'I’ll get back to you as soon as I hear anything.',accepted:['I will get back to you as soon as I hear anything.'],explain:'get back to someone = sich zurückmelden.'},
+ {type:'listen',tense:'Past Simple',prompt:'Listen and type what you hear.',options:[],answer:-1,audio:'I missed the train, so I took a taxi instead.',best:'I missed the train, so I took a taxi instead.',accepted:[],explain:'Two finished past events.'},
+ {type:'listen',tense:'Modal verbs',prompt:'Listen and type what you hear.',options:[],answer:-1,audio:'Could you give me a hand with this for a second?',best:'Could you give me a hand with this for a second?',accepted:[],explain:'give me a hand = mir kurz helfen.'},
+ {type:'listen',tense:'Present Perfect',prompt:'Listen and type what you hear.',options:[],answer:-1,audio:'We haven’t decided where to go yet.',best:'We haven’t decided where to go yet.',accepted:['We have not decided where to go yet.'],explain:'yet is common with Present Perfect negatives.'},
+ {type:'listen',tense:'Mixed',prompt:'Listen and type what you hear.',options:[],answer:-1,audio:'I’m a bit tied up right now, but I can call you later.',best:'I’m a bit tied up right now, but I can call you later.',accepted:['I am a bit tied up right now, but I can call you later.'],explain:'tied up = beschäftigt / verhindert.'}
+];
+
+const GRAMMAR_EXTRA=[
+ {type:'mcq',tense:'Past Continuous',prompt:'At 8 p.m. yesterday, I ___ dinner.',options:['cooked','was cooking','have cooked','had cook'],answer:1,best:'At 8 p.m. yesterday, I was cooking dinner.',accepted:[],explain:'Action in progress at a past moment → Past Continuous.'},
+ {type:'mcq',tense:'Present Perfect Continuous',prompt:'She ___ for the exam since Monday.',options:['studies','has studied yesterday','has been studying','was studying'],answer:2,best:'She has been studying for the exam since Monday.',accepted:[],explain:'Ongoing activity from a start point until now.'},
+ {type:'mcq',tense:'Conditional',prompt:'If I had more time, I ___ more often.',options:['travel','would travel','will travel','would have travelled'],answer:1,best:'If I had more time, I would travel more often.',accepted:[],explain:'Second conditional.'},
+ {type:'mcq',tense:'Future',prompt:'Look at those clouds. It ___.',options:['is going to rain','rains yesterday','has rained','would rain'],answer:0,best:'It is going to rain.',accepted:[],explain:'Evidence now → going to.'}
+];
+
 const T=['Present Simple','Present Continuous','Present Perfect','Present Perfect Continuous','Past Simple','Past Continuous','Past Perfect','Future','Conditional','Modal verbs','Mixed'];
-const V=[['make it','es schaffen'],['keep it down','leiser sein'],['be about to','kurz davor sein'],['get back to someone','sich zurückmelden'],['sort it out','etwas klären'],['run out of','etwas geht aus'],['put off','verschieben'],['be tied up','verhindert sein'],['a bit behind','etwas spät dran'],['work out','klappen / herausfinden']];
-let S=JSON.parse(localStorage.getItem('eshift')||'{"xp":0,"sessions":0,"correct":0,"total":0,"level":"B1+","grammar":{}}'),Q=[],i=0,sel=null,AI=false,AIMODEL='',SESSION_SOURCE='local';
+const SEED_WORDS=[
+ {en:'make it',de:'es schaffen',ex:'I probably won’t make it before six.'},
+ {en:'keep it down',de:'leiser sein',ex:'Could you keep it down a little, please?'},
+ {en:'be about to',de:'kurz davor sein',ex:'I’m about to leave.'},
+ {en:'get back to someone',de:'sich zurückmelden',ex:'I’ll get back to you tomorrow.'},
+ {en:'sort it out',de:'etwas klären',ex:'Don’t worry, we’ll sort it out.'},
+ {en:'run out of',de:'etwas geht aus',ex:'We’ve run out of milk.'},
+ {en:'put off',de:'verschieben',ex:'We had to put the meeting off.'},
+ {en:'be tied up',de:'beschäftigt / verhindert sein',ex:'I’m tied up until three.'},
+ {en:'a bit behind',de:'etwas spät dran',ex:'I’m a bit behind today.'},
+ {en:'work out',de:'klappen / herausfinden',ex:'I’m sure it’ll work out.'}
+];
+
+const DEFAULT={xp:0,sessions:0,correct:0,total:0,level:'B1+',grammar:{},vocab:{},personalWords:[],errors:[]};
+let raw={};try{raw=JSON.parse(localStorage.getItem('eshift')||'{}')}catch(_){}
+let S={...DEFAULT,...raw,grammar:raw.grammar||{},vocab:raw.vocab||{},personalWords:Array.isArray(raw.personalWords)?raw.personalWords:[],errors:Array.isArray(raw.errors)?raw.errors:[]};
+let Q=[],i=0,sel=null,AI=false,AIMODEL='',SESSION_SOURCE='local',RETURN_VIEW='learn',WORD_FILTER='all',SESSION_RECORDED=false;
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const norm=s=>String(s||'').toLowerCase().replace(/[’']/g,"'").replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim();
-function lev(a,b){a=norm(a);b=norm(b);const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,i)=>i),c=new Array(n+1);for(let i=1;i<=m;i++){c[0]=i;for(let j=1;j<=n;j++)c[j]=Math.min(c[j-1]+1,p[j]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));[p,c]=[c,p]}return p[n]}
+function lev(a,b){a=norm(a);b=norm(b);const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,i)=>i),c=new Array(n+1);for(let x=1;x<=m;x++){c[0]=x;for(let y=1;y<=n;y++)c[y]=Math.min(c[y-1]+1,p[y]+1,p[y-1]+(a[x-1]===b[y-1]?0:1));[p,c]=[c,p]}return p[n]}
 function closeEnough(a,b,limit=.04){const x=norm(a),y=norm(b),d=lev(x,y);return d/Math.max(1,x.length,y.length)<=limit}
 function accepted(e,user){const list=[e.best,...(Array.isArray(e.accepted)?e.accepted:[])].filter(Boolean);return list.some(x=>norm(x)===norm(user)||closeEnough(x,user,e.type==='listen'?.05:.04))}
 function clientGrammarRule(user){const a=String(user||'');const duration='(?:\\d+|a|an|one|two|three|four|five|six|seven|eight|nine|ten|several|many|few|a\\s+couple\\s+of|couple\\s+of)\\s+(?:seconds?|minutes?|hours?|days?|weeks?|months?|years?)';if(new RegExp('\\bsince\\s+(?:about\\s+|almost\\s+|nearly\\s+)?'+duration+'\\b','i').test(a))return{correct:false,feedback:'Bei einer Zeitdauer heißt es „for“, nicht „since“: for two hours.',better:a.replace(/\\bsince\\s+/i,'for ')};return null}
 function save(){recalcLevel();localStorage.setItem('eshift',JSON.stringify(S))}
 function recalcLevel(){if(S.total<20)return;const a=S.correct/S.total;if(S.total>=120&&a>=.84)S.level='C1';else if(S.total>=70&&a>=.82)S.level='B2+';else if(S.total>=35&&a>=.78)S.level='B2';else S.level='B1+'}
-function weak(){return[...T].sort((a,b)=>{let A=S.grammar[a]||{c:0,n:0},B=S.grammar[b]||{c:0,n:0};return(A.n?A.c/A.n:.64)-(B.n?B.c/B.n:.64)})}
-function view(v){$$('.view').forEach(x=>x.classList.toggle('on',x.id===v));$$('.nav').forEach(x=>x.classList.toggle('active',x.dataset.v===v));if(v==='home')dash();if(v==='words')words();if(v==='progress')progress()}
-function dash(){$('#level').textContent=S.level;$('#xp').textContent=S.xp;$('#sessions').textContent=S.sessions;$('#acc').textContent=S.total?Math.round(S.correct/S.total*100)+'%':'—';$('#focus').innerHTML='<h3>Heute im Fokus</h3>'+weak().slice(0,3).map(t=>{let g=S.grammar[t]||{c:0,n:0},p=g.n?Math.round(g.c/g.n*100):64;return `<div class="card"><b>${t}</b><span style="float:right">${g.n?p+'%':'neu'}</span><div class="bar"><i style="width:${p}%"></i></div></div>`}).join('')}
-function start(a,source='local'){Q=[...a];i=0;SESSION_SOURCE=source;view('train');render()}
-function render(){if(i>=Q.length){S.sessions++;save();$('#host').innerHTML=`<div class="q" style="text-align:center"><div class="prompt">✓ Shift complete</div><div class="muted">${SESSION_SOURCE==='ai'?'Adaptive AI-Session abgeschlossen. Deine Ergebnisse fließen in die nächste Session ein.':'Fortschritt gespeichert.'}</div><button id="done" class="primary" style="margin-top:18px">Dashboard</button></div>`;$('#done').onclick=()=>view('home');return}sel=null;let e=Q[i];$('#count').textContent=`${i+1}/${Q.length}`;$('#prog').style.width=`${i/Q.length*100}%`;let h=`<div class="q"><div class="tag">${SESSION_SOURCE==='ai'?'AI · ':''}${e.type} · ${e.tense}</div><div class="prompt">${e.prompt}</div>`;if(e.type==='mcq')h+=`<div class="options">${e.options.map((o,n)=>`<button class="option" data-n="${n}">${o}</button>`).join('')}</div>`;else{if(e.type==='listen')h+='<button id="listen">🔊 Listen</button>';h+='<input id="ans" autocomplete="off" placeholder="Your answer…">'}h+='<div id="fb"></div></div><div class="row" style="justify-content:flex-end;margin-top:10px"><button id="check" class="primary">Check →</button></div>';$('#host').innerHTML=h;$$('.option').forEach(b=>b.onclick=()=>{sel=+b.dataset.n;$$('.option').forEach(x=>x.classList.toggle('sel',x===b))});if($('#listen'))$('#listen').onclick=()=>speak(e.audio);if($('#ans'))$('#ans').addEventListener('keydown',ev=>{if(ev.key==='Enter')$('#check').click()});$('#check').onclick=check}
-function speak(t){if(!('speechSynthesis'in window))return alert('Sprachausgabe wird von diesem Browser nicht unterstützt.');let u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}
+function weaknessScore(t){const g=S.grammar[t]||{c:0,n:0};return g.n?g.c/g.n:.64}
+function weak(){return[...T].sort((a,b)=>weaknessScore(a)-weaknessScore(b))}
+function shuffled(a){return[...a].sort(()=>Math.random()-.5)}
+function view(v){$$('.view').forEach(x=>x.classList.toggle('on',x.id===v));$$('.nav').forEach(x=>x.classList.toggle('active',x.dataset.v===v));if(v==='home')dash();if(v==='learn')renderLearn();if(v==='words')words();if(v==='progress')progress();window.scrollTo({top:0,behavior:'smooth'})}
+
+function dash(){
+ $('#level').textContent=S.level;$('#xp').textContent=S.xp;$('#sessions').textContent=S.sessions;$('#acc').textContent=S.total?Math.round(S.correct/S.total*100)+'%':'—';
+ const w=weak()[0];const g=S.grammar[w]||{c:0,n:0};
+ $('#todayText').textContent=g.n?`${w} ist aktuell dein schwächster Bereich (${Math.round(g.c/g.n*100)}%). Die nächste adaptive Session gewichtet ihn stärker.`:`Noch wenig Daten. Starte mit einem gemischten Shift; danach wird die Empfehlung persönlicher.`;
+ $('#focus').innerHTML='<h3>Heute im Fokus</h3>'+weak().slice(0,3).map(t=>{let x=S.grammar[t]||{c:0,n:0},p=x.n?Math.round(x.c/x.n*100):0;return `<div class="card focuscard"><div><b>${t}</b><div class="tiny muted">${x.n?`${x.c}/${x.n} richtig`:'noch keine Daten'}</div><div class="bar" style="margin-top:8px"><i style="width:${p}%"></i></div></div><span>${x.n?p+'%':'neu'}</span></div>`}).join('');
+}
+function renderLearn(){const f=$('#grammarFocus');const current=f.value;f.innerHTML=weak().map(t=>`<option>${t}</option>`).join('');if(current&&T.includes(current))f.value=current}
+
+function start(exercises,source='local',returnView='learn'){Q=[...exercises];i=0;sel=null;SESSION_SOURCE=source;RETURN_VIEW=returnView;SESSION_RECORDED=false;view('train');render()}
+function render(){
+ if(i>=Q.length){if(!SESSION_RECORDED){S.sessions++;SESSION_RECORDED=true;save()}$('#count').textContent='';$('#prog').style.width='100%';$('#host').innerHTML=`<div class="q" style="text-align:center"><div class="tag">SESSION COMPLETE</div><div class="prompt">✓ Shift geschafft</div><div class="muted">Deine Ergebnisse sind gespeichert und beeinflussen die nächsten Empfehlungen.</div><div class="row" style="justify-content:center;margin-top:18px"><button id="again">Noch eine Session</button><button id="done" class="primary">Zur Übersicht</button></div></div>`;$('#done').onclick=()=>view('home');$('#again').onclick=()=>view('learn');return}
+ sel=null;const e=Q[i];$('#count').textContent=`${i+1}/${Q.length}`;$('#prog').style.width=`${i/Q.length*100}%`;
+ let h=`<div class="q"><div class="tag">${SESSION_SOURCE==='ai'?'AI · ':SESSION_SOURCE==='vocab'?'WORTSCHATZ · ':''}${e.type} · ${e.tense||''}</div><div class="prompt">${e.prompt}</div>`;
+ if(e.type==='mcq')h+=`<div class="options">${e.options.map((o,n)=>`<button class="option" data-n="${n}">${o}</button>`).join('')}</div>`;else{if(e.type==='listen')h+='<button id="listen">🔊 Anhören</button>';h+='<input id="ans" autocomplete="off" placeholder="Your answer…">'}
+ h+='<div id="fb"></div></div><div class="row" style="justify-content:flex-end;margin-top:10px"><button id="check" class="primary">Check →</button></div>';$('#host').innerHTML=h;
+ $$('.option').forEach(b=>b.onclick=()=>{sel=+b.dataset.n;$$('.option').forEach(x=>x.classList.toggle('sel',x===b))});if($('#listen'))$('#listen').onclick=()=>speak(e.audio);if($('#ans'))$('#ans').addEventListener('keydown',ev=>{if(ev.key==='Enter')$('#check').click()});$('#check').onclick=check
+}
+function speak(t){if(!('speechSynthesis'in window))return alert('Sprachausgabe wird von diesem Browser nicht unterstützt.');const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}
+
 async function check(){
- let e=Q[i],user='',ok=false,feedback='',better=e.best||'';
+ const e=Q[i];let user='',ok=false,feedback='',better=e.best||'';const btn=$('#check');
  if(e.type==='mcq'){if(sel===null)return;user=e.options[sel];ok=sel===e.answer}
  else{
-   user=$('#ans').value.trim();if(!user)return;
-   const hard=clientGrammarRule(user);
-   if(hard){ok=false;feedback=hard.feedback;better=hard.better||better}
-   else if(e.type==='translate'&&AI){
-     const btn=$('#check');btn.disabled=true;btn.textContent='AI prüft…';
-     try{
-       const r=await fetch('/api/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({exercise:e,answer:user,level:S.level})});
-       const j=await r.json();
-       if(!r.ok)throw new Error(j.message||j.error||'evaluation failed');
-       ok=j.correct===true;feedback=j.feedback||'';better=j.better||better;
-     }catch(err){console.error('AI evaluation failed',err);ok=accepted(e,user);feedback='KI-Prüfung war kurz nicht erreichbar; lokale Kontrolle verwendet.'}
-     finally{btn.disabled=false}
-   }else ok=accepted(e,user)
+  user=$('#ans').value.trim();if(!user)return;
+  const hard=clientGrammarRule(user);
+  if(hard){ok=false;feedback=hard.feedback;better=hard.better}
+  else if(e.type==='translate'&&AI){
+   btn.disabled=true;btn.textContent='AI prüft…';
+   try{const r=await fetch('/api/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({exercise:e,answer:user,level:S.level})});const j=await r.json();if(r.ok){ok=!!j.correct;feedback=j.feedback||'';better=j.better||better}else ok=accepted(e,user)}catch(_){ok=accepted(e,user)}finally{btn.disabled=false}
+  }else ok=accepted(e,user)
  }
- S.total++;if(ok){S.correct++;S.xp+=10}else S.xp+=2;let g=S.grammar[e.tense]||{c:0,n:0};g.n++;if(ok)g.c++;S.grammar[e.tense]=g;save();
+ record(e,user,ok,feedback,better);
  if(e.type==='mcq')$$('.option').forEach((x,n)=>{x.classList.remove('sel');if(n===e.answer)x.classList.add('good');else if(n===sel)x.classList.add('bad')});
- $('#fb').className='fb '+(ok?'goodfb':'badfb');$('#fb').innerHTML=`<b>${ok?'✓ Nice.':'Not quite.'}</b><br>${feedback||e.explain||''}${!ok&&better?`<br><b>Natural:</b> ${better}`:''}`;
- $('#check').disabled=false;$('#check').textContent=i===Q.length-1?'Finish':'Next →';$('#check').onclick=()=>{i++;render()}
+ $('#fb').className='fb '+(ok?'goodfb':'badfb');$('#fb').innerHTML=`<b>${ok?'✓ Richtig.':'Nicht ganz.'}</b>${feedback?`<br>${escapeHtml(feedback)}`:(e.explain?`<br>${escapeHtml(e.explain)}`:'')}${!ok&&better?`<br><b>Besser:</b> ${escapeHtml(better)}`:''}`;btn.textContent=i===Q.length-1?'Finish':'Next →';btn.onclick=()=>{i++;render()}
 }
-function words(){$('#wordsbox').innerHTML=V.map(([w,d])=>`<div class="card"><b>${w}</b><br><span class="muted">${d}</span></div>`).join('')}
-function progress(){$('#grammar').innerHTML=T.map(t=>{let g=S.grammar[t]||{c:0,n:0},p=g.n?Math.round(g.c/g.n*100):0;return `<div class="card"><b>${t}</b><span style="float:right">${g.n?p+'%':'—'}</span><div class="bar"><i style="width:${p}%"></i></div></div>`}).join('')}
-async function health(){try{let r=await fetch('/api/health',{cache:'no-store'}),j=await r.json();AI=!!j.ai;AIMODEL=j.model||''}catch(_){AI=false}$('#dot').classList.toggle('on',AI);$('#dot').classList.toggle('err',!AI);$('#status').textContent=AI?'AI konfiguriert':'AI offline';$('#aiNote').textContent=AI?`OpenAI · ${AIMODEL.replace('openai/','')} · via Vercel AI Gateway`:'Lokaler Daily Shift bleibt verfügbar.'}
-async function aiSession(){if(!AI){await health();if(!AI)return alert('Die KI-Konfiguration ist nicht erreichbar.')}$('#ai').disabled=true;$('#ai').innerHTML='<span class="spin">↻</span> AI erstellt Session…';try{const payload={profile:{level:S.level,estimatedLevel:S.level,help:'balanced'},weakTenses:weak().slice(0,5),grammar:S.grammar,recent:[],vocabMastery:{},length:8};let r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});let j=await r.json();if(!r.ok||!Array.isArray(j.exercises)){let err=new Error(j.message||j.error||'AI generation failed');err.status=r.status;throw err}$('#status').textContent='AI online';start(j.exercises,'ai')}catch(err){console.error(err);if(err.status===429)alert('Das Vercel-AI-Limit ist gerade erreicht. Ich starte eine lokale Session; probiere die AI später erneut.');else alert('Die AI-Session konnte gerade nicht erzeugt werden. Ich starte transparent eine lokale Session.');start([...BASE].sort(()=>Math.random()-.5),'local')}finally{$('#ai').disabled=false;$('#ai').textContent='✦ Adaptive AI-Session'}}
-$('#daily').onclick=()=>start([...BASE].sort(()=>Math.random()-.5),'local');$('#ai').onclick=aiSession;$('#back').onclick=()=>view('home');$$('.nav').forEach(b=>b.onclick=()=>b.dataset.v==='train'?start([...BASE].sort(()=>Math.random()-.5),'local'):view(b.dataset.v));dash();health();
-</script></body></html>
+function record(e,user,ok,feedback,better){
+ S.total++;if(ok){S.correct++;S.xp+=10}else S.xp+=2;
+ if(e.tense&&e.tense!=='Vocabulary'){const g=S.grammar[e.tense]||{c:0,n:0};g.n++;if(ok)g.c++;S.grammar[e.tense]=g}
+ if(e.vocabWord)updateWordMastery(e.vocabWord,ok);
+ if(!ok){S.errors.unshift({date:Date.now(),tense:e.tense||'Mixed',prompt:e.prompt,user,best:better||e.best||'',feedback:feedback||e.explain||''});S.errors=S.errors.slice(0,20)}
+ save()
+}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function dailyMix(){const pool=shuffled([...BASE,...GRAMMAR_EXTRA]);const core=pool.slice(0,6);const listen=shuffled(LISTEN).slice(0,2);start(shuffled([...core,...listen]),'local','learn')}
+async function aiSession(mode='adaptive',focus=''){
+ if(!AI){await health();if(!AI){alert('AI ist gerade nicht erreichbar. Ich starte stattdessen einen lokalen Daily Mix.');return dailyMix()}}
+ const button=mode==='adaptive'?$('#ai'):mode==='grammar'?$('#grammarStart'):$('#listeningStart');const old=button.textContent;button.disabled=true;button.innerHTML='<span class="spin">↻</span> Wird erstellt…';
+ try{const payload={profile:{level:S.level,estimatedLevel:S.level},weakTenses:weak().slice(0,5),grammar:S.grammar,length:8,mode,focus};const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const j=await r.json();if(!r.ok||!Array.isArray(j.exercises))throw Object.assign(new Error(j.message||j.error||'AI generation failed'),{status:r.status});$('#status').textContent='AI online';start(j.exercises,'ai','learn')}
+ catch(err){console.error(err);if(err.status===429)alert('Das AI-Limit ist gerade erreicht. Ich starte eine lokale Alternative.');else alert('Die AI-Session konnte gerade nicht erzeugt werden. Ich starte eine lokale Alternative.');if(mode==='listening')start(shuffled(LISTEN).slice(0,6),'local','learn');else if(mode==='grammar')start(localGrammar(focus),'local','learn');else dailyMix()}
+ finally{button.disabled=false;button.textContent=old}
+}
+function localGrammar(focus){const pool=[...BASE,...GRAMMAR_EXTRA].filter(e=>e.tense===focus);const fallback=[...BASE,...GRAMMAR_EXTRA].filter(e=>e.type!=='listen');let a=pool.length?pool:fallback;while(a.length<6)a=[...a,...a];return shuffled(a).slice(0,6)}
+
+function allWords(){return [...SEED_WORDS.map(x=>({...x,own:false})),...S.personalWords.map(x=>({...x,own:true}))]}
+function wordState(en){return S.vocab[en]||{m:1,due:0}}
+function isDue(en){return (wordState(en).due||0)<=Date.now()}
+function updateWordMastery(en,ok){const x=wordState(en);x.m=Math.max(0,Math.min(5,(x.m||1)+(ok?1:-1)));const days=[0,0,1,3,7,14][x.m]||14;x.due=Date.now()+days*86400000;S.vocab[en]=x}
+function words(){
+ const all=allWords();const due=all.filter(w=>isDue(w.en));$('#dueCount').textContent=`${due.length} fällig`;
+ let list=WORD_FILTER==='due'?due:WORD_FILTER==='own'?all.filter(w=>w.own):all;
+ $('#wordsbox').innerHTML=list.length?list.map(w=>{const x=wordState(w.en),dots='●'.repeat(x.m)+'○'.repeat(5-x.m);return `<div class="card word"><div><b>${escapeHtml(w.en)}</b><div class="muted">${escapeHtml(w.de)}</div><div class="tiny" style="margin-top:7px">${escapeHtml(w.ex||'')}</div><div class="mastery" style="margin-top:8px">${dots}</div></div><div class="word-actions"><button onclick='speak(${JSON.stringify(w.en)})'>🔊</button>${w.own?`<button class="danger" onclick='deleteWord(${JSON.stringify(w.en)})'>×</button>`:''}</div></div>`}).join(''):'<div class="card muted">Hier ist gerade nichts fällig.</div>'
+}
+function addWord(){const en=$('#newEn').value.trim(),de=$('#newDe').value.trim(),ex=$('#newEx').value.trim();if(!en||!de)return alert('Englisch und Deutsch bitte ausfüllen.');if(allWords().some(w=>norm(w.en)===norm(en)))return alert('Dieses Wort ist schon vorhanden.');S.personalWords.push({en,de,ex});S.vocab[en]={m:1,due:0};save();$('#newEn').value=$('#newDe').value=$('#newEx').value='';words()}
+function deleteWord(en){S.personalWords=S.personalWords.filter(w=>w.en!==en);delete S.vocab[en];save();words()}
+function vocabReview(){const due=allWords().filter(w=>isDue(w.en));const chosen=shuffled(due.length?due:allWords()).slice(0,Math.min(6,allWords().length));const translations=allWords().map(w=>w.de);const q=chosen.map(w=>{let opts=shuffled([w.de,...shuffled(translations.filter(d=>d!==w.de)).slice(0,3)]);while(opts.length<4)opts.push('—');return{type:'mcq',tense:'Vocabulary',prompt:`Was bedeutet „${w.en}“?`,options:opts,answer:opts.indexOf(w.de),best:w.de,accepted:[],explain:w.ex||'',audio:'',vocabWord:w.en}});start(q,'vocab','words')}
+
+function progress(){
+ const levels=['B1+','B2','B2+','C1'],idx=Math.max(0,levels.indexOf(S.level));const next=idx<3?levels[idx+1]:'C1';const need=idx===0?35:idx===1?70:idx===2?120:120;
+ $('#levelCard').innerHTML=`<div class="card"><div class="eyebrow">Aktuelles Arbeitsniveau</div><div style="font-size:32px;font-weight:900;margin-top:4px">${S.level}</div><div class="muted tiny">${S.total} Antworten · ${S.total?Math.round(S.correct/S.total*100):0}% korrekt${S.level!=='C1'?` · nächster Marker: ${next}`:''}</div><div class="leveltrack">${levels.map((l,n)=>`<div class="levelstep ${n<=idx?'on':''}"></div>`).join('')}</div><div class="tiny muted" style="margin-top:8px">Niveau steigt nicht nach einer einzelnen guten Session, sondern erst mit genügend Daten und stabiler Trefferquote.</div></div>`;
+ $('#grammar').innerHTML=T.map(t=>{const g=S.grammar[t]||{c:0,n:0},p=g.n?Math.round(g.c/g.n*100):0;return `<div class="card"><b>${t}</b><span style="float:right">${g.n?p+'%':'—'}</span><div class="tiny muted">${g.n?`${g.c}/${g.n} richtig`:'noch keine Daten'}</div><div class="bar" style="margin-top:8px"><i style="width:${p}%"></i></div></div>`}).join('');
+ $('#errors').innerHTML=S.errors.length?S.errors.slice(0,10).map(e=>`<div class="card errorcard"><b>${escapeHtml(e.tense)}</b><div class="tiny muted">${new Date(e.date).toLocaleDateString('de-DE')}</div><div style="margin-top:7px">${escapeHtml(e.prompt)}</div><div class="answer"><span class="muted">Deine Antwort:</span> ${escapeHtml(e.user||'—')}</div><div class="answer"><span class="muted">Besser:</span> <b>${escapeHtml(e.best||'—')}</b></div>${e.feedback?`<div class="tiny" style="margin-top:6px">${escapeHtml(e.feedback)}</div>`:''}</div>`).join(''):'<div class="card muted">Noch keine gespeicherten Fehler. Das ist entweder sehr gut oder noch sehr früh. 🙂</div>'
+}
+
+async function health(){try{const r=await fetch('/api/health',{cache:'no-store'}),j=await r.json();AI=!!j.ai;AIMODEL=j.model||''}catch(_){AI=false}$('#dot').classList.toggle('on',AI);$('#dot').classList.toggle('err',!AI);$('#status').textContent=AI?'AI bereit':'AI offline';$('#aiNote').textContent=AI?`OpenAI · ${AIMODEL.replace('openai/','')} · via Vercel AI Gateway`:'Daily Mix, Grammar und Listening funktionieren lokal weiter.'}
+
+$('#recommended').onclick=()=>AI?aiSession('adaptive'):dailyMix();
+$('#daily').onclick=dailyMix;$('#ai').onclick=()=>aiSession('adaptive');
+$('#grammarStart').onclick=()=>{const f=$('#grammarFocus').value;AI?aiSession('grammar',f):start(localGrammar(f),'local','learn')};
+$('#listeningStart').onclick=()=>AI?aiSession('listening','Listening'):start(shuffled(LISTEN).slice(0,6),'local','learn');
+$('#back').onclick=()=>view(RETURN_VIEW);$('#reviewWords').onclick=vocabReview;$('#addWord').onclick=addWord;
+$$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.toggle('active',x===b));WORD_FILTER=b.dataset.filter;words()});
+$$('.nav').forEach(b=>b.onclick=()=>view(b.dataset.v));
+window.deleteWord=deleteWord;window.speak=speak;
+save();dash();renderLearn();health();
+</script>
+</body>
+</html>
