@@ -1,36 +1,30 @@
-# English Quest – Projektregeln
+# StormSpeak project rules
 
-## Ziel und Zielgruppe
+## Learner
+- Almost 11, grade 5, beginner A1.
+- Keep sessions short, clear and game-like without becoming babyish.
+- Prefer useful phrase chunks in context over isolated word lists.
+- Increase difficulty slowly and adapt to actual performance.
 
-- English Quest ist ein Englischtrainer für ein Kind auf Anfänger-Niveau.
-- Übungen sollen kurz, verständlich, motivierend und spielerisch bleiben.
-- Der Schwerpunkt liegt auf Hörverständnis und Aussprache.
-- Typische deutsche Aussprachefehler sollen gezielt und freundlich trainiert werden.
+## Pedagogy
+- Context → 3 useful chunks → 6 retrieval exercises.
+- Mix meaning, listening, sentence building, typed production and quick responses.
+- Avoid grammar jargon at beginner level; patterns should be absorbed through repeated use.
+- Weak/new chunks recur more often; mastered chunks remain in occasional review.
+- Never count passive viewing/listening alone as mastery.
 
-## Lerninhalte
+## Design
+- Original battle-royale / block-world aesthetic: storm gradients, neon accents, map zones, XP and missions.
+- Do not use Fortnite/Epic, Minecraft/Mojang or Roblox logos, characters, copyrighted art, map assets or copied UI.
+- Mobile-first and touch-friendly.
 
-- Jede Vokabel benötigt eine englische, deutsche und russische Fassung.
-- Jeder englische Beispielsatz benötigt eine deutsche und eine russische Satzübersetzung.
-- Beispielsätze müssen einfach, kurz und altersgerecht sein.
-- Der Themenmix umfasst Schulenglisch, Alltag, Gaming sowie Creator-/Challenge-Inhalte.
-- Neue Schulvokabeln sollen bevorzugt in `data.js` ergänzt werden.
-- Bestehende Inhalte dürfen nicht ohne sachlichen Grund gelöscht werden.
-- Neue Wörter sollen, wenn sinnvoll, auch in Daily Quest, Quiz, Satzbau und Boss Battle einfließen.
+## AI safety
+- AI is a bounded mission generator, not a free-form child chat.
+- Never solicit the child's real name, school, address, phone, email, social handle or other personal data.
+- No purchases, gambling/loot-box mechanics, gore, drugs, sexual content or frightening scenarios.
+- The app must remain fully usable when AI is unavailable.
 
-## Gestaltung und Technik
-
-- Das bestehende Battle-Royale-inspirierte Design muss erhalten bleiben.
-- Inhalte und Konfiguration gehören nach Möglichkeit in `data.js`; `index.html` enthält Darstellung und Anwendungslogik.
-- Änderungen dürfen bestehende Übungen, lokale Fortschrittsdaten und die Browser-Sprachausgabe nicht beeinträchtigen.
-- Aussprache-Erklärungen in Listen & Repeat werden nur auf Russisch angezeigt.
-- Russische Aussprache-Erklärungen müssen durch Anklicken mit russischer Sprachausgabe vorgelesen werden können.
-- Russische Aussprache-Erklärungen müssen für TTS optimiert sein.
-- In `hint_ru` dürfen Aussprachebeispiele niemals in Anführungszeichen, Guillemets oder Klammern stehen. TTS-relevante Laute müssen als normaler Text ohne Einrahmung geschrieben werden.
-- Beim Klick auf „Im Satz hören“ wird der englische Satz gesprochen und gleichzeitig mit deutscher und russischer Übersetzung eingeblendet.
-- Beim Wortwechsel wird der eingeblendete Satz wieder verborgen.
-- English Quest speichert den Lernfortschritt jedes Wortes.
-- Wörter besitzen die Lernstufen Neu, Üben und Sicher.
-- Neue und schwierige Wörter werden häufiger wiederholt als sichere Wörter.
-- Sichere Wörter bleiben gelegentlich in der Wiederholung.
-- Im Lernmodus muss der Benutzer mit „Gewusst“ oder „Noch üben“ selbst bewerten können. Reines Anzeigen oder Anhören eines Wortes zählt nicht als Lernerfolg.
-- Neue Funktionen dürfen vorhandenen Lernfortschritt in localStorage nicht ohne Migration oder ausdrücklichen Reset löschen.
+## Data
+- Progress is stored in `stormSpeakV1` localStorage.
+- Preserve or migrate existing progress when changing storage schemas.
+- Do not log personal data to the AI endpoint.

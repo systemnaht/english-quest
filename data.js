@@ -1,121 +1,85 @@
-// English Quest content file.
-// Neue Schulvokabeln können später hier ergänzt werden, ohne das ganze Portal umzubauen.
-
-// Reihenfolge und Beschriftung der Wortkategorien für die Oberfläche.
-// Neue Kategorien hier eintragen und anschließend im VOCAB_BANK mit derselben ID anlegen.
-const VOCAB_CATEGORIES = [
-  {id:"gaming", label:"Gaming"},
-  {id:"everyday", label:"Alltag"},
-  {id:"school", label:"Schule"},
-  {id:"creator", label:"Creator"}
+const STORMSPEAK_ZONES = [
+  {
+    id: 'spawn', icon: '🛰️', title: 'Spawn Island', subtitle: 'Meet your squad', unlockXp: 0,
+    scene: 'You land on a bright island. A new teammate waves at you. First mission: say who you are and get moving.',
+    pattern: 'I am … / My name is … / Let’s …',
+    phrases: [
+      {id:'hi', en:'Hi!', de:'Hi!', ru:'Привет!', example:'Hi! I am Max.'},
+      {id:'my-name', en:'My name is Max.', de:'Ich heiße Max.', ru:'Меня зовут Макс.', example:'Hi! My name is Max.'},
+      {id:'whats-your-name', en:"What's your name?", de:'Wie heißt du?', ru:'Как тебя зовут?', example:"Hi! What's your name?"},
+      {id:'i-am-ready', en:"I'm ready.", de:'Ich bin bereit.', ru:'Я готов.', example:"I'm ready. Let's go!"},
+      {id:'lets-go', en:"Let's go!", de:'Los geht’s!', ru:'Пошли!', example:"We're ready. Let's go!"},
+      {id:'are-you-ready', en:'Are you ready?', de:'Bist du bereit?', ru:'Ты готов?', example:'Are you ready? Yes, I am!'}
+    ]
+  },
+  {
+    id: 'loot', icon: '🎒', title: 'Loot Lab', subtitle: 'Say what you have and need', unlockXp: 90,
+    scene: 'Your backpack is almost empty. Find useful gear and tell your squad what you have, what you need, and where things are.',
+    pattern: 'I have … / I need … / There is …',
+    phrases: [
+      {id:'i-have-map', en:'I have a map.', de:'Ich habe eine Karte.', ru:'У меня есть карта.', example:'I have a map in my bag.'},
+      {id:'i-need-shield', en:'I need a shield.', de:'Ich brauche einen Schild.', ru:'Мне нужен щит.', example:'I need a shield now.'},
+      {id:'where-chest', en:'Where is the chest?', de:'Wo ist die Kiste?', ru:'Где сундук?', example:'Where is the chest? It is upstairs.'},
+      {id:'there-door', en:'There is a door.', de:'Da ist eine Tür.', ru:'Там есть дверь.', example:'There is a door on the left.'},
+      {id:'i-found-it', en:'I found it!', de:'Ich habe es gefunden!', ru:'Я нашёл!', example:'The key! I found it!'},
+      {id:'take-this', en:'Take this.', de:'Nimm das.', ru:'Возьми это.', example:'Take this. You need it.'}
+    ]
+  },
+  {
+    id: 'squad', icon: '🎧', title: 'Squad Comms', subtitle: 'Fast useful team English', unlockXp: 210,
+    scene: 'The storm is moving. Your squad must understand you quickly. Short English wins here.',
+    pattern: 'Can you …? / I can … / I can’t …',
+    phrases: [
+      {id:'follow-me', en:'Follow me.', de:'Folge mir.', ru:'Следуй за мной.', example:'Follow me. I know the way.'},
+      {id:'help-me', en:'Help me, please.', de:'Hilf mir bitte.', ru:'Помоги мне, пожалуйста.', example:'Help me, please. I am stuck.'},
+      {id:'wait-for-me', en:'Wait for me!', de:'Warte auf mich!', ru:'Подожди меня!', example:'Wait for me! I am coming.'},
+      {id:'i-can-build', en:'I can build.', de:'Ich kann bauen.', ru:'Я умею строить.', example:'I can build a bridge.'},
+      {id:'cant-jump', en:"I can't jump that high.", de:'Ich kann nicht so hoch springen.', ru:'Я не могу так высоко прыгнуть.', example:"I can't jump that high. Can you help?"},
+      {id:'watch-out', en:'Watch out!', de:'Pass auf!', ru:'Осторожно!', example:'Watch out! Something is behind you.'}
+    ]
+  },
+  {
+    id: 'build', icon: '🧱', title: 'Build Zone', subtitle: 'Move, place and describe', unlockXp: 360,
+    scene: 'You enter a blocky build zone. Put things in the right place and describe what everyone is doing.',
+    pattern: 'Put it … / I am + -ing / He is + -ing',
+    phrases: [
+      {id:'put-here', en:'Put it here.', de:'Stell es hier hin.', ru:'Поставь это сюда.', example:'Put it here, next to the wall.'},
+      {id:'next-to', en:'It is next to the wall.', de:'Es ist neben der Wand.', ru:'Это рядом со стеной.', example:'The box is next to the wall.'},
+      {id:'under-bridge', en:'It is under the bridge.', de:'Es ist unter der Brücke.', ru:'Это под мостом.', example:'The key is under the bridge.'},
+      {id:'building-wall', en:'I am building a wall.', de:'Ich baue gerade eine Wand.', ru:'Я сейчас строю стену.', example:'I am building a wall now.'},
+      {id:'he-running', en:'He is running.', de:'Er rennt gerade.', ru:'Он сейчас бежит.', example:'He is running to the tower.'},
+      {id:'they-hiding', en:'They are hiding.', de:'Sie verstecken sich gerade.', ru:'Они сейчас прячутся.', example:'They are hiding behind the house.'}
+    ]
+  },
+  {
+    id: 'realworld', icon: '🏫', title: 'Real World Base', subtitle: 'School and everyday English', unlockXp: 540,
+    scene: 'Game English is useful. Real-life English is the next upgrade: school, home, hobbies and simple routines.',
+    pattern: 'I usually … / I like … / I go …',
+    phrases: [
+      {id:'go-school', en:'I go to school at eight.', de:'Ich gehe um acht zur Schule.', ru:'Я иду в школу в восемь.', example:'I go to school at eight.'},
+      {id:'like-english', en:'I like English.', de:'Ich mag Englisch.', ru:'Мне нравится английский.', example:'I like English and art.'},
+      {id:'after-school', en:'After school, I play with my friends.', de:'Nach der Schule spiele ich mit meinen Freunden.', ru:'После школы я играю с друзьями.', example:'After school, I play with my friends.'},
+      {id:'usually-homework', en:'I usually do my homework first.', de:'Normalerweise mache ich zuerst meine Hausaufgaben.', ru:'Обычно я сначала делаю домашнее задание.', example:'I usually do my homework first.'},
+      {id:'dont-like', en:"I don't like getting up early.", de:'Ich stehe nicht gern früh auf.', ru:'Я не люблю рано вставать.', example:"I don't like getting up early on Monday."},
+      {id:'what-time', en:'What time do you start?', de:'Um wie viel Uhr fängst du an?', ru:'Во сколько ты начинаешь?', example:'What time do you start school?'}
+    ]
+  },
+  {
+    id: 'story', icon: '🏆', title: 'Victory Stories', subtitle: 'Tell what happened', unlockXp: 780,
+    scene: 'Final zone: tell a tiny story about yesterday. No grammar lecture — just useful story chunks that repeat until they feel normal.',
+    pattern: 'Yesterday I … / We … / Then …',
+    phrases: [
+      {id:'yesterday-played', en:'Yesterday I played with my friends.', de:'Gestern habe ich mit meinen Freunden gespielt.', ru:'Вчера я играл с друзьями.', example:'Yesterday I played with my friends.'},
+      {id:'we-won', en:'We won the game.', de:'Wir haben das Spiel gewonnen.', ru:'Мы выиграли игру.', example:'It was close, but we won the game.'},
+      {id:'i-found', en:'I found a secret room.', de:'Ich habe einen geheimen Raum gefunden.', ru:'Я нашёл секретную комнату.', example:'I found a secret room behind the wall.'},
+      {id:'then-went', en:'Then we went home.', de:'Dann gingen wir nach Hause.', ru:'Потом мы пошли домой.', example:'Then we went home.'},
+      {id:'was-fun', en:'It was fun.', de:'Es hat Spaß gemacht.', ru:'Было весело.', example:'The challenge was hard, but it was fun.'},
+      {id:'what-happened', en:'What happened?', de:'Was ist passiert?', ru:'Что случилось?', example:'What happened after that?'}
+    ]
+  }
 ];
 
-const VOCAB_BANK = {
-  gaming: [
-    {en:"shield",de:"Schild",ru:"щит",icon:"🛡️",s:"I need a shield.",s_de:"Ich brauche einen Schild.",s_ru:"Мне нужен щит."},
-    {en:"enemy",de:"Gegner",ru:"враг / противник",icon:"👾",s:"The enemy is behind you.",s_de:"Der Gegner ist hinter dir.",s_ru:"Враг позади тебя."},
-    {en:"build",de:"bauen",ru:"строить",icon:"🧱",s:"Let's build a tower.",s_de:"Lass uns einen Turm bauen.",s_ru:"Давай построим башню."},
-    {en:"sword",de:"Schwert",ru:"меч",icon:"⚔️",s:"I found a sword.",s_de:"Ich habe ein Schwert gefunden.",s_ru:"Я нашёл меч."},
-    {en:"chest",de:"Truhe",ru:"сундук",icon:"📦",s:"Open the chest.",s_de:"Öffne die Truhe.",s_ru:"Открой сундук."},
-    {en:"cave",de:"Höhle",ru:"пещера",icon:"🕳️",s:"We are inside a cave.",s_de:"Wir sind in einer Höhle.",s_ru:"Мы внутри пещеры."},
-    {en:"torch",de:"Fackel",ru:"факел",icon:"🔥",s:"Take a torch.",s_de:"Nimm eine Fackel.",s_ru:"Возьми факел."},
-    {en:"pickaxe",de:"Spitzhacke",ru:"кирка",icon:"⛏️",s:"Use the pickaxe.",s_de:"Benutze die Spitzhacke.",s_ru:"Используй кирку."},
-    {en:"jump",de:"springen",ru:"прыгать",icon:"⬆️",s:"Jump over the wall.",s_de:"Spring über die Mauer.",s_ru:"Перепрыгни через стену."},
-    {en:"teammate",de:"Teamkollege",ru:"товарищ по команде",icon:"🤝",s:"My teammate needs help.",s_de:"Mein Teamkollege braucht Hilfe.",s_ru:"Моему товарищу по команде нужна помощь."}
-  ],
-  everyday: [
-    {en:"hungry",de:"hungrig",ru:"голодный",icon:"🍔",s:"I am hungry.",s_de:"Ich bin hungrig.",s_ru:"Я голоден."},
-    {en:"thirsty",de:"durstig",ru:"испытывающий жажду",icon:"🥤",s:"I am thirsty.",s_de:"Ich bin durstig.",s_ru:"Я хочу пить."},
-    {en:"breakfast",de:"Frühstück",ru:"завтрак",icon:"🥣",s:"Breakfast is ready.",s_de:"Das Frühstück ist fertig.",s_ru:"Завтрак готов."},
-    {en:"jacket",de:"Jacke",ru:"куртка",icon:"🧥",s:"Take your jacket.",s_de:"Nimm deine Jacke.",s_ru:"Возьми свою куртку."},
-    {en:"water",de:"Wasser",ru:"вода",icon:"💧",s:"Can I have some water?",s_de:"Kann ich etwas Wasser haben?",s_ru:"Можно мне воды?"},
-    {en:"friend",de:"Freund",ru:"друг",icon:"🙂",s:"He is my friend.",s_de:"Er ist mein Freund.",s_ru:"Он мой друг."}
-  ],
-  school: [
-    {en:"teacher",de:"Lehrer/in",ru:"учитель",icon:"👩‍🏫",s:"The teacher is here.",s_de:"Die Lehrerin ist hier.",s_ru:"Учитель здесь."},
-    {en:"homework",de:"Hausaufgaben",ru:"домашнее задание",icon:"📚",s:"I finished my homework.",s_de:"Ich habe meine Hausaufgaben fertig.",s_ru:"Я закончил домашнее задание."},
-    {en:"question",de:"Frage",ru:"вопрос",icon:"❓",s:"I have a question.",s_de:"Ich habe eine Frage.",s_ru:"У меня есть вопрос."},
-    {en:"answer",de:"Antwort",ru:"ответ",icon:"✅",s:"I know the answer.",s_de:"Ich kenne die Antwort.",s_ru:"Я знаю ответ."},
-    {en:"school",de:"Schule",ru:"школа",icon:"🏫",s:"I go to school.",s_de:"Ich gehe zur Schule.",s_ru:"Я хожу в школу."},
-    {en:"read",de:"lesen",ru:"читать",icon:"📖",s:"Read the sentence.",s_de:"Lies den Satz.",s_ru:"Прочитай предложение."},
-    {en:"favorite",de:"Lieblings- / am liebsten",ru:"любимый",icon:"⭐",s:"Blue is my favorite color.",s_de:"Blau ist meine Lieblingsfarbe.",s_ru:"Синий — мой любимый цвет."},
-    {en:"their",de:"ihr / ihre",ru:"их",icon:"👫",s:"Their dog is happy.",s_de:"Ihr Hund ist glücklich.",s_ru:"Их собака счастлива."},
-    {en:"together",de:"zusammen",ru:"вместе",icon:"🤝",s:"We play together.",s_de:"Wir spielen zusammen.",s_ru:"Мы играем вместе."},
-    {en:"hair",de:"Haare",ru:"волосы",icon:"💇",s:"Her hair is long.",s_de:"Ihre Haare sind lang.",s_ru:"У неё длинные волосы."},
-    {en:"towels",de:"Handtücher",ru:"полотенца",icon:"🧻",s:"The towels are clean.",s_de:"Die Handtücher sind sauber.",s_ru:"Полотенца чистые."},
-    {en:"always",de:"immer",ru:"всегда",icon:"🔁",s:"I always smile.",s_de:"Ich lächle immer.",s_ru:"Я всегда улыбаюсь."},
-    {en:"new",de:"neu",ru:"новый",icon:"✨",s:"My bag is new.",s_de:"Meine Tasche ist neu.",s_ru:"Моя сумка новая."},
-    {en:"looking for",de:"suchen nach",ru:"искать",icon:"🔎",s:"I am looking for my book.",s_de:"Ich suche mein Buch.",s_ru:"Я ищу свою книгу."},
-    {en:"smart",de:"schlau / klug",ru:"умный",icon:"🧠",s:"She is smart.",s_de:"Sie ist schlau.",s_ru:"Она умная."},
-    {en:"with",de:"mit",ru:"с",icon:"🫶",s:"Come with me.",s_de:"Komm mit mir.",s_ru:"Идём со мной."},
-    {en:"suddenly",de:"plötzlich",ru:"вдруг",icon:"⚡",s:"Suddenly, it is dark.",s_de:"Plötzlich ist es dunkel.",s_ru:"Вдруг стало темно."},
-    {en:"shoes",de:"Schuhe",ru:"обувь",icon:"👟",s:"My shoes are blue.",s_de:"Meine Schuhe sind blau.",s_ru:"Моя обувь синяя."},
-    {en:"castles",de:"Burgen / Schlösser",ru:"замки",icon:"🏰",s:"The castles are big.",s_de:"Die Burgen sind groß.",s_ru:"Замки большие."},
-    {en:"colorful",de:"bunt / farbenfroh",ru:"разноцветный / красочный",icon:"🌈",s:"The picture is colorful.",s_de:"Das Bild ist bunt.",s_ru:"Картина красочная."},
-    {en:"touches",de:"berührt",ru:"касается",icon:"👆",s:"She touches the ball.",s_de:"Sie berührt den Ball.",s_ru:"Она касается мяча."},
-    {en:"brave",de:"mutig",ru:"смелый",icon:"🦁",s:"The brave girl helps.",s_de:"Das mutige Mädchen hilft.",s_ru:"Смелая девочка помогает."},
-    {en:"puzzle",de:"Rätsel / Puzzle",ru:"головоломка",icon:"🧩",s:"This puzzle is easy.",s_de:"Dieses Rätsel ist einfach.",s_ru:"Эта головоломка простая."},
-    {en:"build",de:"bauen",ru:"строить",icon:"🧱",s:"We build a small house.",s_de:"Wir bauen ein kleines Haus.",s_ru:"Мы строим маленький дом."},
-    {en:"cloudy",de:"bewölkt",ru:"облачный",icon:"☁️",s:"It is cloudy today.",s_de:"Heute ist es bewölkt.",s_ru:"Сегодня облачно."},
-    {en:"curly",de:"lockig",ru:"кудрявый",icon:"🌀",s:"Her hair is curly.",s_de:"Ihre Haare sind lockig.",s_ru:"У неё кудрявые волосы."},
-    {en:"sneakers",de:"Turnschuhe / Sneaker",ru:"кроссовки",icon:"👟",s:"My sneakers are new.",s_de:"Meine Turnschuhe sind neu.",s_ru:"Мои кроссовки новые."},
-    {en:"castle",de:"Burg / Schloss",ru:"замок",icon:"🏰",s:"The castle is big.",s_de:"Die Burg ist groß.",s_ru:"Замок большой."},
-    {en:"strange",de:"seltsam / merkwürdig",ru:"странный",icon:"🛸",s:"That sound is strange.",s_de:"Dieses Geräusch ist seltsam.",s_ru:"Этот звук странный."}
-  ],
-  creator: [
-    {en:"challenge",de:"Challenge / Aufgabe",ru:"челлендж / задание",icon:"🏆",s:"This challenge is difficult.",s_de:"Diese Challenge ist schwierig.",s_ru:"Этот челлендж сложный."},
-    {en:"video",de:"Video",ru:"видео",icon:"🎥",s:"This video is funny.",s_de:"Dieses Video ist lustig.",s_ru:"Это видео смешное."},
-    {en:"crazy",de:"verrückt",ru:"сумасшедший",icon:"🤯",s:"That was crazy!",s_de:"Das war verrückt!",s_ru:"Это было безумно!"},
-    {en:"winner",de:"Gewinner",ru:"победитель",icon:"🥇",s:"You are the winner.",s_de:"Du bist der Gewinner.",s_ru:"Ты победитель."},
-    {en:"ready",de:"bereit",ru:"готов",icon:"⚡",s:"Are you ready?",s_de:"Bist du bereit?",s_ru:"Ты готов?"},
-    {en:"watch",de:"anschauen",ru:"смотреть",icon:"👀",s:"Watch this!",s_de:"Schau dir das an!",s_ru:"Посмотри на это!"}
-  ]
+const STORMSPEAK_FEEDBACK = {
+  good: ['Nice! Clean hit.', 'Yep — that works.', 'Strong move.', 'Perfect. Keep going.', 'Got it. +XP'],
+  retry: ['Almost. Use the hint and try once more.', 'Not yet — one small fix.', 'Close! Look at the sentence chunk.', 'Good attempt. Let’s rebuild it.']
 };
-
-const PRONUNCIATION_TRAPS = [
-  {en:"three",de:"drei",ru:"три",icon:"3️⃣",hint_ru:"Слегка высунь кончик языка между зубами. Не говори сри.",s:"I have three blocks.",s_de:"Ich habe drei Blöcke.",s_ru:"У меня есть три блока."},
-  {en:"this",de:"dies / das",ru:"это / этот",icon:"👉",hint_ru:"Слегка высунь язык между зубами и добавь голос. Не говори дис.",s:"This is my house.",s_de:"Das ist mein Haus.",s_ru:"Это мой дом."},
-  {en:"world",de:"Welt",ru:"мир",icon:"🌍",hint_ru:"Начни с округлённых губ, затем быстро соедини звуки р и л.",s:"This is my world.",s_de:"Das ist meine Welt.",s_ru:"Это мой мир."},
-  {en:"water",de:"Wasser",ru:"вода",icon:"💧",hint_ru:"Начни с округлённых губ. Не произноси начало как немецкое w.",s:"I need water.",s_de:"Ich brauche Wasser.",s_ru:"Мне нужна вода."},
-  {en:"school",de:"Schule",ru:"школа",icon:"🏫",hint_ru:"В начале говори ск, а не немецкое ш.",s:"I go to school.",s_de:"Ich gehe zur Schule.",s_ru:"Я хожу в школу."},
-  {en:"game",de:"Spiel",ru:"игра",icon:"🎮",hint_ru:"Буква a звучит как эй, почти как в слове name.",s:"This game is fun.",s_de:"Dieses Spiel macht Spaß.",s_ru:"Эта игра весёлая."},
-  {en:"build",de:"bauen",ru:"строить",icon:"🧱",hint_ru:"Гласный звук короткий, похож на и. Не произноси u как немецкое у.",s:"Let's build a house.",s_de:"Lass uns ein Haus bauen.",s_ru:"Давай построим дом."},
-  {en:"sword",de:"Schwert",ru:"меч",icon:"⚔️",hint_ru:"Буква w здесь молчит. Начинай слово сразу со звука с.",s:"I have a sword.",s_de:"Ich habe ein Schwert.",s_ru:"У меня есть меч."},
-  {en:"favorite",de:"Lieblings- / am liebsten",ru:"любимый",icon:"⭐",hint_ru:"Первая a звучит как эй. Произнеси слово тремя короткими частями: фэй-вэ-рит.",s:"Blue is my favorite color.",s_de:"Blau ist meine Lieblingsfarbe.",s_ru:"Синий — мой любимый цвет."},
-  {en:"their",de:"ihr / ihre",ru:"их",icon:"👫",hint_ru:"Слегка высунь язык между зубами и добавь голос. Не говори немецкое дэр.",s:"Their dog is happy.",s_de:"Ihr Hund ist glücklich.",s_ru:"Их собака счастлива."},
-  {en:"together",de:"zusammen",ru:"вместе",icon:"🤝",hint_ru:"Для th слегка высунь язык между зубами. Не заменяй этот звук на т или д.",s:"We play together.",s_de:"Wir spielen zusammen.",s_ru:"Мы играем вместе."},
-  {en:"towels",de:"Handtücher",ru:"полотенца",icon:"🧻",hint_ru:"В середине плавно скажи ау, а конец произнеси легко и быстро.",s:"The towels are clean.",s_de:"Die Handtücher sind sauber.",s_ru:"Полотенца чистые."},
-  {en:"with",de:"mit",ru:"с",icon:"🫶",hint_ru:"В конце слегка высунь язык между зубами. Не добавляй немецкий звук т.",s:"Come with me.",s_de:"Komm mit mir.",s_ru:"Идём со мной."},
-  {en:"shoes",de:"Schuhe",ru:"обувь",icon:"👟",hint_ru:"Сочетание oo произносится как долгое у. В конце s звучит звонко, как з.",s:"My shoes are blue.",s_de:"Meine Schuhe sind blau.",s_ru:"Моя обувь синяя."},
-  {en:"castles",de:"Burgen / Schlösser",ru:"замки",icon:"🏰",hint_ru:"Буква t не произносится. Говори примерно каслз, а не кастэлс.",s:"The castles are big.",s_de:"Die Burgen sind groß.",s_ru:"Замки большие."},
-  {en:"touches",de:"berührt",ru:"касается",icon:"👆",hint_ru:"Буква u звучит коротко, как а. Окончание произноси как из: тач-из.",s:"She touches the ball.",s_de:"Sie berührt den Ball.",s_ru:"Она касается мяча."},
-  {en:"curly",de:"lockig",ru:"кудрявый",icon:"🌀",hint_ru:"В начале язык слегка загни назад для звука кёр. Конец произнеси легко: ли.",s:"Her hair is curly.",s_de:"Ihre Haare sind lockig.",s_ru:"У неё кудрявые волосы."},
-  {en:"sneakers",de:"Turnschuhe / Sneaker",ru:"кроссовки",icon:"👟",hint_ru:"Начни со слитного сн. Долгий звук и произнеси без немецкого растягивания.",s:"My sneakers are new.",s_de:"Meine Turnschuhe sind neu.",s_ru:"Мои кроссовки новые."},
-  {en:"strange",de:"seltsam / merkwürdig",ru:"странный",icon:"🛸",hint_ru:"Начни со слитного стр. В середине звучит эй, а в конце мягкий звук дж.",s:"That sound is strange.",s_de:"Dieses Geräusch ist seltsam.",s_ru:"Этот звук странный."},
-  {en:"castle",de:"Burg / Schloss",ru:"замок",icon:"🏰",hint_ru:"Буква t не произносится. После кас сразу переходи к мягкому л.",s:"The castle is big.",s_de:"Die Burg ist groß.",s_ru:"Замок большой."}
-];
-
-const SENTENCE_BUILDS = [
-  {de:"Ich brauche einen Schild.",ru:"Мне нужен щит.",en:"I need a shield.",help:"Starte mit „I“. Danach kommt das Verb „need“."},
-  {de:"Der Gegner ist hinter dir.",ru:"Враг позади тебя.",en:"The enemy is behind you.",help:"Starte mit „The enemy“. Danach brauchst Du „is“."},
-  {de:"Wir bauen ein Haus.",ru:"Мы строим дом.",en:"We build a house.",help:"Starte mit „We“. Das Verb steht direkt danach."},
-  {de:"Ich bin hungrig.",ru:"Я голоден.",en:"I am hungry.",help:"Bei „I“ benutzt Du hier „am“."},
-  {de:"Bist du bereit?",ru:"Ты готов?",en:"Are you ready?",help:"Bei einer Frage steht „Are“ ganz vorne."},
-  {de:"Schau dir das an!",ru:"Посмотри на это!",en:"Watch this!",help:"Der Satz beginnt direkt mit dem Verb „Watch“."},
-  {de:"Ihre Schuhe sind neu.",ru:"Их обувь новая.",en:"Their shoes are new.",help:"Starte mit „Their shoes“. Danach kommt „are“."},
-  {de:"Wir spielen immer zusammen.",ru:"Мы всегда играем вместе.",en:"We always play together.",help:"Starte mit „We“. „Always“ steht vor „play“."},
-  {de:"Ich suche meine Handtücher.",ru:"Я ищу свои полотенца.",en:"I am looking for my towels.",help:"„Looking for“ bleibt zusammen. Davor stehen „I am“."},
-  {de:"Die Burgen sind bunt.",ru:"Замки разноцветные.",en:"The castles are colorful.",help:"Starte mit „The castles“. Danach kommt „are“."},
-  {de:"Sie ist schlau.",ru:"Она умная.",en:"She is smart.",help:"Starte mit „She“. Danach kommt „is“."},
-  {de:"Heute ist es bewölkt.",ru:"Сегодня облачно.",en:"It is cloudy today.",help:"Starte mit „It is“. „Today“ steht am Ende."},
-  {de:"Meine Turnschuhe sind neu.",ru:"Мои кроссовки новые.",en:"My sneakers are new.",help:"Starte mit „My sneakers“. Danach kommt „are“."},
-  {de:"Die Burg ist groß.",ru:"Замок большой.",en:"The castle is big.",help:"Starte mit „The castle“. Danach kommt „is“."},
-  {de:"Wir bauen ein kleines Haus.",ru:"Мы строим маленький дом.",en:"We build a small house.",help:"Nach „We“ kommt das Verb „build“."}
-];
-
-const CREATOR_CHALLENGES = [
-  {mode:"Speed Challenge",prompt:"Your friend says: “Are you ready?”",audio:"Are you ready?",correct:"Yes, I am!",options:["Yes, I am!","I am a sword.","Blue is hungry.","Yesterday pizza."]},
-  {mode:"Creator Challenge",prompt:"You hear: “Watch this!” What does it mean?",audio:"Watch this!",correct:"Schau dir das an! / Посмотри на это!",options:["Schau dir das an! / Посмотри на это!","Mach die Tür zu!","Ich habe Hunger.","Wo ist die Schule?"]},
-  {mode:"Twin Challenge",prompt:"Your teammate says: “Do it again!”",audio:"Do it again!",correct:"Noch einmal machen / Сделать ещё раз",options:["Noch einmal machen / Сделать ещё раз","Nach Hause gehen","Etwas essen","Still stehen"]},
-  {mode:"Speed Challenge",prompt:"You hear: “That was crazy!”",audio:"That was crazy!",correct:"Das war verrückt! / Это было безумно!",options:["Das war verrückt! / Это было безумно!","Das war langsam.","Ich bin müde.","Das ist mein Lehrer."]}
-];

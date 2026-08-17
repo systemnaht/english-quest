@@ -1,0 +1,7 @@
+{
+  "name": "stormspeak",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Adaptive A1 English trainer for a grade-5 learner, with contextual missions and Vercel AI Gateway",
+  "engines": { "node": "24.x" }
+}
