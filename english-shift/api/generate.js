@@ -1,5 +1,12 @@
 const URL='https://ai-gateway.vercel.sh/v1/chat/completions';
 
+const TENSES=['Present Perfect Continuous','Present Continuous','Present Perfect','Present Simple','Past Continuous','Past Perfect','Past Simple','Modal verbs','Conditional','Future','Mixed'];
+function normalizeTense(raw,fallback='Mixed'){
+  const s=String(raw||'').toLowerCase();
+  const hit=TENSES.find(t=>s.includes(t.toLowerCase()));
+  return hit||fallback;
+}
+
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
   if(req.method!=='POST')return res.status(405).json({error:'method'});
@@ -81,19 +88,23 @@ Use natural current everyday English and concise German explanations. No markdow
     const chunks=(Array.isArray(j.chunks)?j.chunks:[]).slice(0,3).map(w=>({
       en:String(w.en||w.chunk||'').slice(0,90),de:String(w.de||w.meaning||'').slice(0,160),example:String(w.example||'').slice(0,240)
     })).filter(w=>w.en&&w.de);
-    const exercises=j.exercises.slice(0,length).map(e=>({
-      type:['mcq','translate','listen'].includes(e.type)?e.type:'translate',
-      tense:String(e.tense||focus||'Mixed'),
-      prompt:String(e.prompt||''),
-      options:Array.isArray(e.options)?e.options.slice(0,4).map(String):[],
-      answer:Number.isInteger(e.answer)?e.answer:-1,
-      best:String(e.best||''),
-      accepted:Array.isArray(e.accepted)?e.accepted.map(String):[],
-      explain:String(e.explain||''),
-      audio:String(e.audio||''),
-      hints:Array.isArray(e.hints)?e.hints.slice(0,3).map(String):[],
-      blocks:Array.isArray(e.blocks)?e.blocks.slice(0,6).map(String):[]
-    }));
+    const exercises=j.exercises.slice(0,length).map(e=>{
+      let tense=normalizeTense(e.tense,allowed[0]||'Mixed');
+      if(mode!=='grammar'&&allowed.length&&!allowed.includes(tense))tense=allowed[0];
+      return{
+        type:['mcq','translate','listen'].includes(e.type)?e.type:'translate',
+        tense,
+        prompt:String(e.prompt||''),
+        options:Array.isArray(e.options)?e.options.slice(0,4).map(String):[],
+        answer:Number.isInteger(e.answer)?e.answer:-1,
+        best:String(e.best||''),
+        accepted:Array.isArray(e.accepted)?e.accepted.map(String):[],
+        explain:String(e.explain||''),
+        audio:String(e.audio||''),
+        hints:Array.isArray(e.hints)?e.hints.slice(0,3).map(String):[],
+        blocks:Array.isArray(e.blocks)?e.blocks.slice(0,6).map(String):[]
+      };
+    });
 
     return res.status(200).json({warmup,chunks,exercises,model:out.model||'openai/gpt-5-mini',mode,focus,curriculumAllowed:allowed});
   }catch(e){return res.status(500).json({error:'generation',message:String(e.message||e)})}
