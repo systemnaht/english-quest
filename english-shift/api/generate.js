@@ -9,29 +9,50 @@ export default async function handler(req,res){
   const level=b.profile?.estimatedLevel||b.profile?.level||b.level||'B1+';
   const weak=Array.isArray(b.weakTenses)?b.weakTenses:Array.isArray(b.weak)?b.weak:[];
   const recent=Array.isArray(b.recentErrors)?b.recentErrors.slice(0,6):[];
+  const allowed=Array.isArray(b.curriculumAllowed)?b.curriculumAllowed.map(String).filter(Boolean).slice(0,12):[];
+  const curriculum=b.curriculumLesson&&typeof b.curriculumLesson==='object'?b.curriculumLesson:{};
   const length=Math.max(5,Math.min(10,Number(b.length)||8));
   const mode=['adaptive','grammar','listening'].includes(b.mode)?b.mode:'adaptive';
-  const focus=String(b.focus||weak[0]||'mixed grammar').slice(0,80);
+  const focus=String(b.focus||weak[0]||curriculum.title||'mixed grammar').slice(0,120);
 
   let modeInstruction='Use a balanced mix of MCQ, German-to-English translation and listening. Prioritise the learner weak areas.';
   if(mode==='grammar') modeInstruction=`This is a focused grammar drill on ${focus}. Use mostly MCQ and German-to-English translation. Every item must genuinely test ${focus}; do not drift into unrelated grammar.`;
   if(mode==='listening') modeInstruction='This is a listening sprint. Every exercise MUST have type="listen". Put one natural spoken-English sentence in audio; prompt should be "Listen and type what you hear." Use contractions and realistic everyday phrases appropriate to the level.';
 
+  const curriculumRule=allowed.length
+    ? `CURRICULUM BOUNDARY: The learner has been explicitly introduced to these grammar targets only: ${allowed.join(', ')}. In adaptive/listening mode, test ONLY these targets. Other grammar may occur incidentally in natural sentences but must not be the knowledge required to solve an item. Do not introduce a new named grammar construction as a test. In grammar mode, the explicit focus may be tested even if it is outside this list.`
+    : 'Keep grammar appropriate to the stated CEFR level and avoid unexplained advanced constructions.';
   const recentText=recent.map(x=>({tense:x.tense,prompt:x.prompt,user:x.user,best:x.best}));
-  const prompt=`Create a scaffolded English-learning session for a German-speaking learner at ${level}.
-Mode: ${mode}. Focus: ${focus}. Weak areas: ${weak.join(', ')||'mixed grammar'}.
+
+  const prompt=`Create a structured, scaffolded English-learning session for a German-speaking learner at ${level}.
+Mode: ${mode}. Focus: ${focus}. Weak areas within learned material: ${weak.join(', ')||'none yet'}.
+Current grammar-path lesson: ${String(curriculum.title||'not specified')}
+Core idea of current lesson: ${String(curriculum.core||'')}
+Important trap: ${String(curriculum.trap||'')}
 Recent learner errors: ${JSON.stringify(recentText).slice(0,2500)}
+${curriculumRule}
 ${modeInstruction}
 
-The session must teach before it tests, but NEVER reveal an exercise answer in the warm-up.
+Pedagogy:
+- The session follows: compact preparation -> retrieval attempt -> progressive hints -> later review.
+- Teach before testing when a useful everyday chunk is needed, but NEVER reveal an exercise answer in the warm-up.
+- Prefer coherent practice of a small number of related structures instead of random grammar switching.
+
 Return ONLY valid JSON with this exact top-level shape:
-{"warmup":[{"title":"...","meaning":"...","example":"..."}],"exercises":[...]}
+{"warmup":[{"title":"...","meaning":"...","example":"..."}],"chunks":[{"en":"...","de":"...","example":"..."}],"exercises":[...]}
 
 WARM-UP RULES:
 - Give exactly 3 short preparation items.
-- Each item teaches a useful grammar idea or everyday chunk that will help in the upcoming session.
+- Each item teaches a useful grammar idea or everyday chunk that helps with the upcoming session.
 - Use a DIFFERENT example sentence from every exercise prompt, audio, best answer and accepted answer.
 - Do not copy or paraphrase a full exercise answer.
+- Keep each item compact enough to read on a phone.
+
+CHUNKS RULES:
+- Return 0-3 reusable, genuinely useful everyday English chunks that the learner is being introduced to or reinforcing in this session.
+- A chunk is something worth keeping in a personal dictionary, e.g. "be able to", "get back to someone", "end up doing".
+- Do NOT return grammar labels, function words, trivial single words, or a complete exercise answer.
+- Give a concise German meaning and an example sentence different from the tested sentence.
 
 Each exercise must contain: type (mcq|translate|listen), tense, prompt, options, answer, best, accepted, explain, audio, hints, blocks.
 - hints must be an array of exactly 3 progressively stronger German hints:
@@ -57,6 +78,9 @@ Use natural current everyday English and concise German explanations. No markdow
     const warmup=(Array.isArray(j.warmup)?j.warmup:[]).slice(0,3).map(w=>({
       title:String(w.title||'Baustein'),meaning:String(w.meaning||''),example:String(w.example||'')
     }));
+    const chunks=(Array.isArray(j.chunks)?j.chunks:[]).slice(0,3).map(w=>({
+      en:String(w.en||w.chunk||'').slice(0,90),de:String(w.de||w.meaning||'').slice(0,160),example:String(w.example||'').slice(0,240)
+    })).filter(w=>w.en&&w.de);
     const exercises=j.exercises.slice(0,length).map(e=>({
       type:['mcq','translate','listen'].includes(e.type)?e.type:'translate',
       tense:String(e.tense||focus||'Mixed'),
@@ -71,6 +95,6 @@ Use natural current everyday English and concise German explanations. No markdow
       blocks:Array.isArray(e.blocks)?e.blocks.slice(0,6).map(String):[]
     }));
 
-    return res.status(200).json({warmup,exercises,model:out.model||'openai/gpt-5-mini',mode,focus});
+    return res.status(200).json({warmup,chunks,exercises,model:out.model||'openai/gpt-5-mini',mode,focus,curriculumAllowed:allowed});
   }catch(e){return res.status(500).json({error:'generation',message:String(e.message||e)})}
 }
