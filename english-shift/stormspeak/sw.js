@@ -1,10 +1,8 @@
-const CACHE = 'stormspeak-shell-v5';
-const SHELL = ['/stormspeak/', '/stormspeak/index.html', '/stormspeak/app.js', '/stormspeak/data.js', '/stormspeak/manifest.webmanifest?v=3', '/stormspeak/icon-192.png?v=3', '/stormspeak/icon-512.png?v=3'];
+const CACHE = 'stormspeak-shell-v6';
+const SHELL = ['/stormspeak/', '/stormspeak/index.html', '/stormspeak/app.js', '/stormspeak/data.js', '/stormspeak/manifest.webmanifest', '/stormspeak/app.webmanifest', '/stormspeak/app-icon-192.png', '/stormspeak/app-icon-512.png'];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(SHELL)).catch(() => undefined)
-  );
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).catch(() => undefined));
   self.skipWaiting();
 });
 
@@ -12,9 +10,7 @@ self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
     await Promise.all(keys.map(key => (
-      key.startsWith('stormspeak-shell-') && key !== CACHE
-        ? caches.delete(key)
-        : Promise.resolve()
+      key.startsWith('stormspeak-shell-') && key !== CACHE ? caches.delete(key) : Promise.resolve()
     )));
     await self.clients.claim();
   })());
@@ -31,10 +27,14 @@ self.addEventListener('fetch', event => {
       if (response && response.ok) {
         const copy = response.clone();
         caches.open(CACHE).then(cache => cache.put(event.request, copy)).catch(() => undefined);
+        return response;
+      }
+      if (event.request.mode === 'navigate') {
+        return (await caches.match('/stormspeak/')) || response;
       }
       return response;
     } catch (_) {
-      return (await caches.match(event.request)) || (await caches.match('/stormspeak/'));
+      return (await caches.match(event.request)) || (event.request.mode === 'navigate' ? await caches.match('/stormspeak/') : Response.error());
     }
   })());
 });
