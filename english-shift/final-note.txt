@@ -1,0 +1,1 @@
+PWA assets use stable filenames and no-cache headers.
