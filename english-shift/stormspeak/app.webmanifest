@@ -1,0 +1,18 @@
+{
+  "id": "/stormspeak/",
+  "name": "StormSpeak",
+  "short_name": "StormSpeak",
+  "description": "Spielerischer, adaptiver Englisch-Trainer mit kurzen Missionen, Sprachbausteinen und KI-Drops.",
+  "lang": "de",
+  "start_url": "/stormspeak/?source=pwa",
+  "scope": "/stormspeak/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#071129",
+  "theme_color": "#121b46",
+  "prefer_related_applications": false,
+  "icons": [
+    {"src":"/stormspeak/app-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"/stormspeak/app-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"}
+  ]
+}
