@@ -25,8 +25,7 @@ let promptEvent=null;
 const btn=document.getElementById('install');
 const status=document.getElementById('status');
 const help=document.getElementById('help');
-function ready(){status.className='status ok';status.textContent='Bereit zur Installation';btn.disabled=false;}
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;ready();});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;status.className='status ok';status.textContent='Bereit zur Installation';btn.disabled=false;});
 window.addEventListener('appinstalled',()=>{status.className='status ok';status.textContent='Installiert ✓';btn.disabled=true;help.textContent='Du kannst die App jetzt vom Homescreen öffnen.';});
 btn.addEventListener('click',async()=>{
  if(!promptEvent){help.textContent='Chrome bietet die PWA-Installation noch nicht an. Entferne zuerst eine eventuell vorhandene alte English-Shift-App vom Homescreen und lade diese Seite neu.';return;}
@@ -38,7 +37,7 @@ btn.addEventListener('click',async()=>{
 (async()=>{
  if(matchMedia('(display-mode: standalone)').matches){status.className='status ok';status.textContent='Bereits als App geöffnet';btn.disabled=true;return;}
  if('serviceWorker' in navigator){try{await navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'});await navigator.serviceWorker.ready;}catch(e){}}
- setTimeout(()=>{if(!promptEvent&&!btn.disabled===false)return;if(!promptEvent){status.className='status warn';status.textContent='Chrome meldet noch keine PWA-Installation';help.textContent='Falls bereits ein altes English-Shift-Icon vorhanden ist: lange drücken → Entfernen/Deinstallieren, dann diese Seite neu laden.';}},2500);
+ setTimeout(()=>{if(!promptEvent){status.className='status warn';status.textContent='Chrome meldet noch keine PWA-Installation';help.textContent='Falls bereits ein altes English-Shift-Icon vorhanden ist: lange drücken → Entfernen/Deinstallieren, dann diese Seite neu laden.';}},2500);
 })();
 </script>
 </body>
