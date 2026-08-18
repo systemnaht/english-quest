@@ -1,0 +1,210 @@
+name: Build launcher APKs
+
+on:
+  push:
+    branches:
+      - apk-build-temp-20260818
+    paths:
+      - .github/workflows/build-launcher-apks.yml
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build two tiny browser launchers
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BT="$(ls -d "$ANDROID_SDK_ROOT"/build-tools/* | sort -V | tail -1)"
+          PLATFORM="$(ls -d "$ANDROID_SDK_ROOT"/platforms/android-* | sort -V | tail -1)"
+          ANDROID_JAR="$PLATFORM/android.jar"
+          echo "Build tools: $BT"
+          echo "Platform: $PLATFORM"
+
+          mkdir -p "$GITHUB_WORKSPACE/apks"
+
+          keytool -genkeypair -noprompt \
+            -keystore "$GITHUB_WORKSPACE/launcher-release.jks" \
+            -storepass launcher123 \
+            -keypass launcher123 \
+            -alias launcher \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=English Launchers, OU=Personal, O=Systemnaht, L=Nuremberg, C=DE"
+
+          build_launcher() {
+            local app_id="$1"
+            local package_name="$2"
+            local label="$3"
+            local url="$4"
+            local output_name="$5"
+
+            local work="$GITHUB_WORKSPACE/build/$app_id"
+            local pkg_path="${package_name//./\/}"
+            mkdir -p "$work/src/$pkg_path" "$work/classes" "$work/dex" "$work/res/drawable"
+
+            if [[ "$app_id" == "english-shift" ]]; then
+              cat > "$work/res/drawable/icon.xml" <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp"
+              android:height="108dp"
+              android:viewportWidth="108"
+              android:viewportHeight="108">
+              <path android:fillColor="#1F65E8" android:pathData="M0,0h108v108h-108z" />
+              <path android:fillColor="#FFFFFF" android:pathData="M18,24h30v9H28v13h18v9H28v20h20v9H18z" />
+              <path android:fillColor="#FFFFFF" android:pathData="M86,24H60c-3,0-5,2-5,5v21c0,3 2,5 5,5h17v20H55v9h26c3,0 5,-2 5,-5V51c0,-3-2,-5-5,-5H64V33h22z" />
+          </vector>
+          EOF
+            else
+              cat > "$work/res/drawable/icon.xml" <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp"
+              android:height="108dp"
+              android:viewportWidth="108"
+              android:viewportHeight="108">
+              <path android:fillColor="#14203A" android:pathData="M0,0h108v108h-108z" />
+              <path android:fillColor="#FFD53A" android:pathData="M63,12L34,59h19L44,96l31,-51H57z" />
+          </vector>
+          EOF
+            fi
+
+            cat > "$work/AndroidManifest.xml" <<EOF
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="$package_name">
+              <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="35" />
+              <application
+                  android:allowBackup="false"
+                  android:icon="@drawable/icon"
+                  android:label="$label"
+                  android:supportsRtl="true"
+                  android:theme="@android:style/Theme.NoDisplay">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+            cat > "$work/src/$pkg_path/MainActivity.java" <<EOF
+          package $package_name;
+
+          import android.app.Activity;
+          import android.content.ActivityNotFoundException;
+          import android.content.Intent;
+          import android.net.Uri;
+          import android.os.Bundle;
+
+          public class MainActivity extends Activity {
+              private static final String TARGET_URL = "$url";
+
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  openTarget();
+              }
+
+              private void openTarget() {
+                  Uri target = Uri.parse(TARGET_URL);
+                  Intent chrome = new Intent(Intent.ACTION_VIEW, target);
+                  chrome.addCategory(Intent.CATEGORY_BROWSABLE);
+                  chrome.setPackage("com.android.chrome");
+
+                  try {
+                      startActivity(chrome);
+                  } catch (ActivityNotFoundException noChrome) {
+                      Intent browser = new Intent(Intent.ACTION_VIEW, target);
+                      browser.addCategory(Intent.CATEGORY_BROWSABLE);
+                      try {
+                          startActivity(browser);
+                      } catch (ActivityNotFoundException ignored) {
+                          // Device has no browser; exit silently.
+                      }
+                  }
+                  finish();
+              }
+          }
+          EOF
+
+            javac -source 8 -target 8 \
+              -classpath "$ANDROID_JAR" \
+              -d "$work/classes" \
+              "$work/src/$pkg_path/MainActivity.java"
+
+            "$BT/d8" \
+              --lib "$ANDROID_JAR" \
+              --min-api 23 \
+              --output "$work/dex" \
+              "$work/classes/$pkg_path/MainActivity.class"
+
+            "$BT/aapt2" compile \
+              --dir "$work/res" \
+              -o "$work/resources.zip"
+
+            "$BT/aapt2" link \
+              -o "$work/base.apk" \
+              -I "$ANDROID_JAR" \
+              --manifest "$work/AndroidManifest.xml" \
+              "$work/resources.zip"
+
+            cp "$work/base.apk" "$work/unsigned.apk"
+            unsigned_abs="$(realpath "$work/unsigned.apk")"
+            (
+              cd "$work/dex"
+              zip -q -u "$unsigned_abs" classes.dex
+            )
+
+            "$BT/zipalign" -f -p 4 "$work/unsigned.apk" "$work/aligned.apk"
+
+            "$BT/apksigner" sign \
+              --ks "$GITHUB_WORKSPACE/launcher-release.jks" \
+              --ks-key-alias launcher \
+              --ks-pass pass:launcher123 \
+              --key-pass pass:launcher123 \
+              --v1-signing-enabled true \
+              --v2-signing-enabled true \
+              --out "$GITHUB_WORKSPACE/apks/$output_name" \
+              "$work/aligned.apk"
+
+            "$BT/apksigner" verify --verbose "$GITHUB_WORKSPACE/apks/$output_name"
+            if [[ -x "$BT/aapt" ]]; then
+              "$BT/aapt" dump badging "$GITHUB_WORKSPACE/apks/$output_name" | head -n 6
+            fi
+            ls -lh "$GITHUB_WORKSPACE/apks/$output_name"
+          }
+
+          build_launcher \
+            "english-shift" \
+            "com.systemnaht.englishshiftlauncher" \
+            "English Shift" \
+            "https://english-shift.vercel.app/" \
+            "English-Shift.apk"
+
+          build_launcher \
+            "stormspeak" \
+            "com.systemnaht.stormspeaklauncher" \
+            "StormSpeak" \
+            "https://english-shift.vercel.app/stormspeak/" \
+            "StormSpeak.apk"
+
+      - name: Upload English Shift APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: English-Shift-APK
+          path: apks/English-Shift.apk
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Upload StormSpeak APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: StormSpeak-APK
+          path: apks/StormSpeak.apk
+          if-no-files-found: error
+          compression-level: 0
