@@ -1,0 +1,1 @@
+This file records the 2026-08-18 icon alias repair. The linked browser shortcut icon files are intentionally kept identical to the selected PWA app icons.
