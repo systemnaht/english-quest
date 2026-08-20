@@ -1,5 +1,6 @@
 const GATEWAY='https://ai-gateway.vercel.sh/v1/chat/completions';
 const MODEL='openai/gpt-5.4-mini';
+// StormSpeak v3: German-led instructions, contextual A1 challenge.
 
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
