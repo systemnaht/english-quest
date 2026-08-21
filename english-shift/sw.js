@@ -1,5 +1,6 @@
-const CACHE = 'english-shift-shell-v6';
-const SHELL = ['/', '/index.html', '/app.js', '/enhancements.js', '/manifest.webmanifest', '/app.webmanifest', '/app-icon-192.png', '/app-icon-512.png'];
+const CACHE = 'english-shift-shell-v7';
+const OFFLINE_URL = '/offline.html';
+const SHELL = ['/', '/index.html', '/offline.html', '/app.js', '/enhancements.js', '/manifest.webmanifest', '/app.webmanifest', '/app-icon-192.png', '/app-icon-512.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).catch(() => undefined));
@@ -33,11 +34,14 @@ self.addEventListener('fetch', event => {
         return response;
       }
       if (event.request.mode === 'navigate') {
-        return (await caches.match('/')) || response;
+        return (await caches.match(event.request)) || (await caches.match('/')) || (await caches.match(OFFLINE_URL)) || response;
       }
       return response;
     } catch (_) {
-      return (await caches.match(event.request)) || (event.request.mode === 'navigate' ? await caches.match('/') : Response.error());
+      if (event.request.mode === 'navigate') {
+        return (await caches.match(event.request)) || (await caches.match('/')) || (await caches.match(OFFLINE_URL)) || Response.error();
+      }
+      return (await caches.match(event.request)) || Response.error();
     }
   })());
 });
