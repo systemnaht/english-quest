@@ -1,4 +1,4 @@
-const CACHE = 'stormspeak-shell-v6';
+const CACHE = 'stormspeak-shell-v7';
 const SHELL = ['/stormspeak/', '/stormspeak/index.html', '/stormspeak/app.js', '/stormspeak/data.js', '/stormspeak/manifest.webmanifest', '/stormspeak/app.webmanifest', '/stormspeak/app-icon-192.png', '/stormspeak/app-icon-512.png'];
 
 self.addEventListener('install', event => {
@@ -20,6 +20,7 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin || !url.pathname.startsWith('/stormspeak/')) return;
+  if (url.pathname.startsWith('/stormspeak/parent/')) return;
 
   event.respondWith((async () => {
     try {
