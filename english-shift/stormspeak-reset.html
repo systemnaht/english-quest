@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#121b46">
+<title>StormSpeak Reset</title>
+<style>
+html,body{margin:0;min-height:100%;background:#071129;color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}body{display:grid;place-items:center;padding:24px}.card{width:min(520px,100%);background:#111d45;border:1px solid #2f4380;border-radius:22px;padding:24px;box-sizing:border-box}.muted{color:#b9c4e8;line-height:1.5}.ok{color:#d7ff48;font-weight:800}
+</style>
+</head>
+<body>
+<div class="card"><h1>StormSpeak wird aktualisiert</h1><p id="msg" class="muted">Alter Test-Cache wird entfernt. Kirills Lernstand und Cloud-Verbindung bleiben erhalten.</p></div>
+<script>
+(async()=>{
+  const msg=document.getElementById('msg');
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.filter(r=>(r.scope||'').includes('/stormspeak/')).map(r=>r.unregister()));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(k=>k.startsWith('stormspeak-shell-')).map(k=>caches.delete(k)));
+    }
+    msg.innerHTML='<span class="ok">Fertig.</span> StormSpeak wird neu geöffnet …';
+    setTimeout(()=>location.replace('/stormspeak/?fresh='+Date.now()),700);
+  }catch(e){
+    msg.textContent='Reset abgeschlossen. StormSpeak wird neu geöffnet …';
+    setTimeout(()=>location.replace('/stormspeak/?fresh='+Date.now()),900);
+  }
+})();
+</script>
+</body>
+</html>
