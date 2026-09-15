@@ -16,7 +16,7 @@ class StormCloud{
       this.client=createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
       let {data:{session}}=await this.client.auth.getSession();if(!session){const s=await this.client.auth.signInAnonymously();if(s.error)throw s.error;session=s.data.session}
       this.user=session?.user||null;if(!this.user)throw new Error('Keine Gerätesitzung');
-      try{await this.client.from('device_checkins').insert({auth_user_id:this.user.id,installation_id:installationId(),app_version:'stormspeak-2.0-prod'})}catch{}
+      try{await this.client.rpc('stormspeak_device_checkin',{p_installation_id:installationId(),p_app_version:'stormspeak-2.0-prod'})}catch{}
       const {data,error}=await this.client.from('learner_profiles').select('id,display_name,cefr_track,curriculum_version').limit(1);if(error)throw error;
       this.learner=data?.[0]||null;this.ready=!!this.learner;if(this.ready){await this.refresh();await this.flush()}this.error=null;this.emit();return this.status();
     }catch(e){this.error=String(e?.message||e);this.ready=false;this.emit();return this.status()}
