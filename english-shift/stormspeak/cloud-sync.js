@@ -1,17 +1,20 @@
-/* StormSpeak 2.0 transitional cloud bridge.
+/* StormSpeak 2.0 cloud bridge.
    - Keeps the existing localStorage trainer working.
    - Adds anonymous Supabase auth + parent pairing.
-   - Syncs the legacy state snapshot for migration/backup only.
-   - Does NOT let the client write authoritative mastery.
+   - Keeps a legacy snapshot for migration/backup.
+   - Records structured sessions + attempts as learning evidence.
+   - Authoritative mastery is calculated server-side, never by the child client.
 */
 (()=>{
   const PENDING_KEY='stormSpeakCloudPendingV1';
+  const EVENT_QUEUE_KEY='stormSpeakCloudEventsV1';
   const VERSION='2.116.0';
   let client=null,config=null,learner=null,initPromise=null,flushing=false,lastSyncedAt=null,lastError=null;
+  let eventFlushing=false,activeStructuredSession=null;
   const listeners=new Set();
 
   const emit=()=>{const s=status();listeners.forEach(fn=>{try{fn(s)}catch{}});renderPanel()};
-  const status=()=>({enabled:!!config?.enabled,ready:!!client,paired:!!learner,learner,online:navigator.onLine,flushing,lastSyncedAt,lastError});
+  const status=()=>({enabled:!!config?.enabled,ready:!!client,paired:!!learner,learner,online:navigator.onLine,flushing,lastSyncedAt,lastError,queuedEvents:readEventQueue().length});
 
   async function loadConfig(){
     const r=await fetch('/api/stormspeak-cloud-config',{cache:'no-store'});
@@ -37,7 +40,7 @@
       if(!session)throw new Error('anonymous_session_failed');
       await refreshLearner();
       lastError=null;emit();
-      if(learner)setTimeout(()=>void flush(),0);
+      if(learner)setTimeout(()=>{void flush();void flushStructuredEvents()},0);
       return client;
     })().catch(e=>{lastError=String(e.message||e);console.warn('[StormSpeak cloud]',e);emit();return null});
     return initPromise;
@@ -77,6 +80,7 @@
     lastError=null;emit();
     queueSnapshot();
     await flush();
+    await flushStructuredEvents();
     return learner;
   }
 
@@ -113,7 +117,118 @@
       if(error)throw error;
       localStorage.removeItem(PENDING_KEY);
       lastSyncedAt=new Date();lastError=null;
-    }catch(e){lastError=String(e.message||e);console.warn('[StormSpeak cloud] sync',e)}finally{flushing=false;emit()}
+    }catch(e){lastError=String(e.message||e);console.warn('[StormSpeak cloud] snapshot sync',e)}finally{flushing=false;emit()}
+  }
+
+  function newId(){
+    if(globalThis.crypto?.randomUUID)return globalThis.crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c==='x'?r:(r&3|8);return v.toString(16)});
+  }
+
+  function readEventQueue(){
+    try{const q=JSON.parse(localStorage.getItem(EVENT_QUEUE_KEY)||'[]');return Array.isArray(q)?q:[]}catch{return[]}
+  }
+
+  function writeEventQueue(q){
+    localStorage.setItem(EVENT_QUEUE_KEY,JSON.stringify(q.slice(-250)));
+  }
+
+  function queueStructuredEvent(event){
+    const q=readEventQueue();q.push(event);writeEventQueue(q);emit();
+    if(navigator.onLine)void flushStructuredEvents();
+  }
+
+  function missionSnapshot(){
+    try{
+      if(typeof mission==='undefined'||!mission)return{};
+      return{
+        source:String(mission.source||'standard'),
+        title:String(mission.title||'Mission'),
+        zoneId:String(mission.zone?.id||'unknown'),
+        zoneTitle:String(mission.zone?.title||''),
+        exerciseCount:Number(mission.exercises?.length||0)
+      };
+    }catch{return{}}
+  }
+
+  function goalExistsLocally(phraseId){
+    if(!phraseId)return false;
+    try{return Array.isArray(STORMSPEAK_ZONES)&&STORMSPEAK_ZONES.some(z=>z.phrases?.some(p=>p.id===phraseId))}catch{return false}
+  }
+
+  function beginStructuredSession(){
+    const m=missionSnapshot();
+    const startedAt=new Date().toISOString();
+    activeStructuredSession={id:newId(),startedAt,startedMs:Date.now(),closed:false,mission:m};
+    queueStructuredEvent({kind:'session_start',session:{id:activeStructuredSession.id,startedAt,mission:m}});
+  }
+
+  function ensureStructuredSession(){
+    if(!activeStructuredSession||activeStructuredSession.closed)beginStructuredSession();
+    return activeStructuredSession;
+  }
+
+  function recordStructuredAttempt(correct,skill,phraseId,userAnswer,best,seenBefore){
+    const s=ensureStructuredSession();
+    let ex=null,index=-1;
+    try{index=Number(mission?.index??-1);ex=mission?.exercises?.[index]||null}catch{}
+    const answeredAt=new Date().toISOString();
+    const goalId=goalExistsLocally(phraseId)?phraseId:null;
+    queueStructuredEvent({kind:'attempt',attempt:{
+      id:newId(),sessionId:s.id,exerciseKey:`${s.mission.zoneId||'unknown'}:${phraseId||'none'}:${ex?.type||skill||'practice'}:${index}`,
+      goalId,taskType:String(ex?.type||skill||'practice'),contextKey:String(s.mission.zoneId||'unknown'),
+      evidenceKind:Number(seenBefore||0)>0?'review':'new',correct:!!correct,firstTryCorrect:!!correct,
+      hintsUsed:0,retryCount:0,learnerAnswer:userAnswer==null?null:String(userAnswer).slice(0,1000),
+      expectedAnswer:best==null?null:String(best).slice(0,1000),answeredAt,
+      metadata:{skill:String(skill||''),phraseId:phraseId||null,missionSource:s.mission.source||'standard',missionTitle:s.mission.title||'',zoneTitle:s.mission.zoneTitle||''}
+    }});
+  }
+
+  function closeStructuredSession(){
+    if(!activeStructuredSession||activeStructuredSession.closed)return;
+    activeStructuredSession.closed=true;
+    const endedAt=new Date().toISOString();
+    const durationSeconds=Math.max(0,Math.round((Date.now()-activeStructuredSession.startedMs)/1000));
+    queueStructuredEvent({kind:'session_end',session:{id:activeStructuredSession.id,endedAt,durationSeconds}});
+    activeStructuredSession=null;
+  }
+
+  async function flushStructuredEvents(){
+    if(eventFlushing||!navigator.onLine)return;
+    eventFlushing=true;
+    try{
+      await ensureClient();
+      if(!client||!learner)return;
+      const {data:{user}}=await client.auth.getUser();
+      if(!user)return;
+      let q=readEventQueue();
+      while(q.length){
+        const ev=q[0];let error=null;
+        if(ev.kind==='session_start'){
+          const s=ev.session;
+          ({error}=await client.from('learning_sessions').insert({
+            id:s.id,learner_id:learner.id,source_auth_user_id:user.id,mode:s.mission?.source||'standard',
+            started_at:s.startedAt,client_created_at:s.startedAt,
+            metadata:{title:s.mission?.title||'',zone_id:s.mission?.zoneId||'',zone_title:s.mission?.zoneTitle||'',exercise_count:s.mission?.exerciseCount||0}
+          }));
+        }else if(ev.kind==='attempt'){
+          const a=ev.attempt;
+          ({error}=await client.from('attempts').insert({
+            id:a.id,learner_id:learner.id,session_id:a.sessionId,exercise_id:null,exercise_key:a.exerciseKey,
+            goal_id:a.goalId,source_auth_user_id:user.id,task_type:a.taskType,context_key:a.contextKey,
+            evidence_kind:a.evidenceKind,correct:a.correct,first_try_correct:a.firstTryCorrect,hints_used:a.hintsUsed,
+            retry_count:a.retryCount,learner_answer:a.learnerAnswer,expected_answer:a.expectedAnswer,
+            answered_at:a.answeredAt,client_created_at:a.answeredAt,metadata:a.metadata||{}
+          }));
+        }else if(ev.kind==='session_end'){
+          const s=ev.session;
+          ({error}=await client.from('learning_sessions').update({ended_at:s.endedAt,duration_seconds:s.durationSeconds}).eq('id',s.id).eq('source_auth_user_id',user.id));
+        }
+        if(error&&error.code!=='23505')throw error;
+        q.shift();writeEventQueue(q);
+        lastSyncedAt=new Date();lastError=null;emit();
+      }
+    }catch(e){lastError=String(e.message||e);console.warn('[StormSpeak cloud] structured sync',e)}finally{eventFlushing=false;emit()}
   }
 
   function onStatus(fn){listeners.add(fn);try{fn(status())}catch{};return()=>listeners.delete(fn)}
@@ -131,6 +246,38 @@
       save=wrapped;
       queueSnapshot(typeof state!=='undefined'?state:undefined);
     }catch(e){console.warn('[StormSpeak cloud] save hook',e)}
+  }
+
+  function wrapLearningEvents(){
+    try{
+      if(typeof openMission==='function'&&!openMission.__stormSpeakEventsWrapped){
+        const originalOpen=openMission;
+        const wrappedOpen=function(){beginStructuredSession();return originalOpen.apply(this,arguments)};
+        wrappedOpen.__stormSpeakEventsWrapped=true;openMission=wrappedOpen;
+      }
+      if(typeof reward==='function'&&!reward.__stormSpeakEventsWrapped){
+        const originalReward=reward;
+        const wrappedReward=function(correct,skill,phraseId,userAnswer,best){
+          let seenBefore=0;
+          try{seenBefore=phraseId&&typeof mastery==='function'?Number(mastery(phraseId)?.seen||0):0}catch{}
+          const result=originalReward.apply(this,arguments);
+          try{recordStructuredAttempt(correct,skill,phraseId,userAnswer,best,seenBefore)}catch(e){console.warn('[StormSpeak cloud] attempt hook',e)}
+          return result;
+        };
+        wrappedReward.__stormSpeakEventsWrapped=true;reward=wrappedReward;
+      }
+      if(typeof renderMissionStep==='function'&&!renderMissionStep.__stormSpeakEventsWrapped){
+        const originalRender=renderMissionStep;
+        const wrappedRender=function(){
+          const result=originalRender.apply(this,arguments);
+          try{if(activeStructuredSession&&typeof mission!=='undefined'&&mission&&mission.index>=mission.exercises.length)closeStructuredSession()}catch{}
+          return result;
+        };
+        wrappedRender.__stormSpeakEventsWrapped=true;renderMissionStep=wrappedRender;
+      }
+      const quit=document.getElementById('quitMission');
+      if(quit&&!quit.dataset.structuredHook){quit.dataset.structuredHook='1';quit.addEventListener('click',()=>closeStructuredSession(),{capture:true})}
+    }catch(e){console.warn('[StormSpeak cloud] learning event hooks',e)}
   }
 
   function ensurePanel(){
@@ -151,7 +298,8 @@
     if(lastError&&!client){card.innerHTML='<b>Cloud momentan nicht erreichbar</b><div class="mini" style="margin-top:6px">Die App funktioniert lokal weiter.</div>';return}
     if(learner){
       const stamp=lastSyncedAt?` · zuletzt ${lastSyncedAt.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`:'';
-      card.innerHTML=`<b>☁️ Verbunden: ${escapeHtml(learner.display_name||'Lernprofil')}</b><div class="mini" style="margin-top:6px">${flushing?'Synchronisiere…':'Cloud Sync aktiv'}${stamp}</div>`;
+      const queued=readEventQueue().length;
+      card.innerHTML=`<b>☁️ Verbunden: ${escapeHtml(learner.display_name||'Lernprofil')}</b><div class="mini" style="margin-top:6px">${flushing||eventFlushing?'Synchronisiere…':'Cloud Sync aktiv'}${stamp}${queued?` · ${queued} ausstehend`:''}</div>`;
       return;
     }
     card.innerHTML='<b>Gerät mit Lernprofil verbinden</b><div class="mini" style="margin:6px 0 10px">Gib den 8-stelligen Code aus dem Elternbereich ein.</div><div class="inputrow"><input id="cloudPairCode" inputmode="text" autocomplete="one-time-code" maxlength="9" placeholder="ABCD-EFGH"><button id="cloudPairBtn" class="secondary">Verbinden</button></div><div id="cloudPairMsg" class="mini" style="margin-top:8px"></div>';
@@ -168,9 +316,10 @@
 
   function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
-  window.StormSpeakCloudBridge={init:ensureClient,status,onStatus,pair,queueSnapshot,flush,refreshLearner};
-  window.addEventListener('online',()=>void flush());
+  window.StormSpeakCloudBridge={init:ensureClient,status,onStatus,pair,queueSnapshot,flush,refreshLearner,flushStructuredEvents};
+  window.addEventListener('online',()=>{void flush();void flushStructuredEvents()});
   window.addEventListener('offline',emit);
-  if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',()=>{ensurePanel();wrapExistingSave();void ensureClient()});
-  else {ensurePanel();wrapExistingSave();void ensureClient()}
+  const boot=()=>{ensurePanel();wrapExistingSave();wrapLearningEvents();void ensureClient()};
+  if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',boot);
+  else boot();
 })();
