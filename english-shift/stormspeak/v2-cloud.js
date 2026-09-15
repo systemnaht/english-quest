@@ -1,8 +1,9 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm';
-const Q='stormspeakV2Queue';
+const Q='stormspeakV2Queue',INSTALL='stormspeakV2Installation';
 const read=()=>{try{const x=JSON.parse(localStorage.getItem(Q)||'[]');return Array.isArray(x)?x:[]}catch{return[]}};
 const write=q=>localStorage.setItem(Q,JSON.stringify(q.slice(-500)));
 const id=()=>globalThis.crypto?.randomUUID?.()||'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c==='x'?r:(r&3|8);return v.toString(16)});
+const installationId=()=>{let v=localStorage.getItem(INSTALL);if(!v){v=id();localStorage.setItem(INSTALL,v)}return v};
 class StormCloud{
   constructor(){this.client=null;this.user=null;this.learner=null;this.goalStates=new Map();this.stats={attempts:0,correct:0,sessions:0};this.error=null;this.ready=false;this.listeners=new Set()}
   on(fn){this.listeners.add(fn);return()=>this.listeners.delete(fn)}
@@ -15,6 +16,7 @@ class StormCloud{
       this.client=createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
       let {data:{session}}=await this.client.auth.getSession();if(!session){const s=await this.client.auth.signInAnonymously();if(s.error)throw s.error;session=s.data.session}
       this.user=session?.user||null;if(!this.user)throw new Error('Keine Gerätesitzung');
+      try{await this.client.from('device_checkins').insert({auth_user_id:this.user.id,installation_id:installationId(),app_version:'stormspeak-2.0-prod'})}catch{}
       const {data,error}=await this.client.from('learner_profiles').select('id,display_name,cefr_track,curriculum_version').limit(1);if(error)throw error;
       this.learner=data?.[0]||null;this.ready=!!this.learner;if(this.ready){await this.refresh();await this.flush()}this.error=null;this.emit();return this.status();
     }catch(e){this.error=String(e?.message||e);this.ready=false;this.emit();return this.status()}
