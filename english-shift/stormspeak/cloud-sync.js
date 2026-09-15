@@ -7,11 +7,11 @@
 (()=>{
   const PENDING_KEY='stormSpeakCloudPendingV1';
   const VERSION='2.116.0';
-  let client=null,config=null,learner=null,initPromise=null,flushing=false;
+  let client=null,config=null,learner=null,initPromise=null,flushing=false,lastSyncedAt=null,lastError=null;
   const listeners=new Set();
 
-  const emit=()=>{const s=status();listeners.forEach(fn=>{try{fn(s)}catch{}})};
-  const status=()=>({enabled:!!config?.enabled,ready:!!client,paired:!!learner,learner,online:navigator.onLine});
+  const emit=()=>{const s=status();listeners.forEach(fn=>{try{fn(s)}catch{}});renderPanel()};
+  const status=()=>({enabled:!!config?.enabled,ready:!!client,paired:!!learner,learner,online:navigator.onLine,flushing,lastSyncedAt,lastError});
 
   async function loadConfig(){
     const r=await fetch('/api/stormspeak-cloud-config',{cache:'no-store'});
@@ -36,10 +36,10 @@
       }
       if(!session)throw new Error('anonymous_session_failed');
       await refreshLearner();
-      emit();
+      lastError=null;emit();
       if(learner)await flush();
       return client;
-    })().catch(e=>{console.warn('[StormSpeak cloud]',e);emit();return null});
+    })().catch(e=>{lastError=String(e.message||e);console.warn('[StormSpeak cloud]',e);emit();return null});
     return initPromise;
   }
 
@@ -74,7 +74,7 @@
     const out=await r.json().catch(()=>({}));
     if(!r.ok)throw new Error(out.error||'pairing_failed');
     await refreshLearner();
-    emit();
+    lastError=null;emit();
     queueSnapshot();
     await flush();
     return learner;
@@ -94,7 +94,7 @@
 
   async function flush(){
     if(flushing||!navigator.onLine)return;
-    flushing=true;
+    flushing=true;emit();
     try{
       await ensureClient();
       if(!client||!learner)return;
@@ -112,8 +112,8 @@
       },{onConflict:'learner_id'});
       if(error)throw error;
       localStorage.removeItem(PENDING_KEY);
-      emit();
-    }catch(e){console.warn('[StormSpeak cloud] sync',e)}finally{flushing=false}
+      lastSyncedAt=new Date();lastError=null;
+    }catch(e){lastError=String(e.message||e);console.warn('[StormSpeak cloud] sync',e)}finally{flushing=false;emit()}
   }
 
   function onStatus(fn){listeners.add(fn);try{fn(status())}catch{};return()=>listeners.delete(fn)}
@@ -133,8 +133,44 @@
     }catch(e){console.warn('[StormSpeak cloud] save hook',e)}
   }
 
+  function ensurePanel(){
+    const progress=document.getElementById('progress');
+    if(!progress||document.getElementById('cloudSyncWrap'))return;
+    const wrap=document.createElement('div');
+    wrap.id='cloudSyncWrap';
+    wrap.innerHTML='<div class="sectionhead"><div><h2>Cloud Sync</h2><p>Lernstand sichern und mit dem Elternzugang verbinden.</p></div></div><div id="cloudSyncCard" class="card"></div>';
+    progress.appendChild(wrap);
+  }
+
+  function renderPanel(){
+    ensurePanel();
+    const card=document.getElementById('cloudSyncCard');
+    if(!card)return;
+    if(!config){card.innerHTML='<div class="mini">Cloud wird geprüft…</div>';return}
+    if(!config.enabled){card.innerHTML='<div class="mini">Cloud Sync ist für diese Version noch nicht aktiviert.</div>';return}
+    if(lastError&&!client){card.innerHTML='<b>Cloud momentan nicht erreichbar</b><div class="mini" style="margin-top:6px">Die App funktioniert lokal weiter.</div>';return}
+    if(learner){
+      const stamp=lastSyncedAt?` · zuletzt ${lastSyncedAt.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`:'';
+      card.innerHTML=`<b>☁️ Verbunden: ${escapeHtml(learner.display_name||'Lernprofil')}</b><div class="mini" style="margin-top:6px">${flushing?'Synchronisiere…':'Cloud Sync aktiv'}${stamp}</div>`;
+      return;
+    }
+    card.innerHTML='<b>Gerät mit Lernprofil verbinden</b><div class="mini" style="margin:6px 0 10px">Gib den 8-stelligen Code aus dem Elternbereich ein.</div><div class="inputrow"><input id="cloudPairCode" inputmode="text" autocomplete="one-time-code" maxlength="9" placeholder="ABCD-EFGH"><button id="cloudPairBtn" class="secondary">Verbinden</button></div><div id="cloudPairMsg" class="mini" style="margin-top:8px"></div>';
+    const input=document.getElementById('cloudPairCode'),btn=document.getElementById('cloudPairBtn'),msg=document.getElementById('cloudPairMsg');
+    if(!input||!btn)return;
+    input.oninput=()=>{let v=input.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);input.value=v.length>4?`${v.slice(0,4)}-${v.slice(4)}`:v};
+    btn.onclick=async()=>{
+      btn.disabled=true;msg.textContent='Verbindung wird geprüft…';
+      try{await pair(input.value);msg.textContent='Verbunden. Lernstand wird synchronisiert.'}
+      catch(e){const code=String(e.message||e);msg.textContent=code.includes('expired')?'Code ist abgelaufen. Bitte neuen Code erzeugen.':code.includes('used')?'Dieser Code wurde schon verwendet.':code.includes('invalid')?'Code nicht erkannt.':'Verbindung nicht möglich.'}
+      finally{btn.disabled=false;renderPanel()}
+    };
+  }
+
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
   window.StormSpeakCloudBridge={init:ensureClient,status,onStatus,pair,queueSnapshot,flush,refreshLearner};
   window.addEventListener('online',()=>void flush());
-  if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',()=>{wrapExistingSave();void ensureClient()});
-  else {wrapExistingSave();void ensureClient()}
+  window.addEventListener('offline',emit);
+  if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',()=>{ensurePanel();wrapExistingSave();void ensureClient()});
+  else {ensurePanel();wrapExistingSave();void ensureClient()}
 })();
