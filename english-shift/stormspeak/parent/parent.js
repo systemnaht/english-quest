@@ -1,22 +1,17 @@
 (()=>{
   const VERSION='2.116.0';
+  const SUPABASE_URL='https://tvlphkclmdssazlkwavn.supabase.co';
+  const PUBLISHABLE_KEY='sb_publishable_Y6oDt4QvOtTnmOu2Z0IWlg_FHv6cD-P';
+  const PAIRING_URL=`${SUPABASE_URL}/functions/v1/stormspeak-pairing`;
   let supabase=null,currentUser=null;
   const $=id=>document.getElementById(id);
   const show=(id,on)=>$(id).classList.toggle('hide',!on);
   const msg=(id,text)=>{$(id).textContent=text||''};
 
-  async function config(){
-    const r=await fetch('/api/stormspeak-cloud-config',{cache:'no-store'});
-    if(!r.ok)throw new Error('Cloud-Konfiguration nicht erreichbar.');
-    return r.json();
-  }
-
   async function init(){
     try{
-      const c=await config();
-      if(!c.enabled){$('statusText').textContent='Cloud ist für diese Version noch nicht aktiviert.';return}
       const mod=await import(`https://cdn.jsdelivr.net/npm/@supabase/supabase-js@${VERSION}/+esm`);
-      supabase=mod.createClient(c.supabaseUrl,c.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      supabase=mod.createClient(SUPABASE_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
       supabase.auth.onAuthStateChange((_event,session)=>{void applySession(session)});
       const {data:{session}}=await supabase.auth.getSession();
       await applySession(session);
@@ -38,7 +33,7 @@
   async function callParent(body){
     const token=await accessToken();
     if(!token)throw new Error('Bitte erneut anmelden.');
-    const r=await fetch('/api/stormspeak-parent',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify(body)});
+    const r=await fetch(PAIRING_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`,apikey:PUBLISHABLE_KEY},body:JSON.stringify(body)});
     const out=await r.json().catch(()=>({}));
     if(!r.ok)throw new Error(out.error||'Aktion fehlgeschlagen.');
     return out;
