@@ -37,7 +37,7 @@
       if(!session)throw new Error('anonymous_session_failed');
       await refreshLearner();
       lastError=null;emit();
-      if(learner)await flush();
+      if(learner)setTimeout(()=>void flush(),0);
       return client;
     })().catch(e=>{lastError=String(e.message||e);console.warn('[StormSpeak cloud]',e);emit();return null});
     return initPromise;
