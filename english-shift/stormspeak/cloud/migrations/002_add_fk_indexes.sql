@@ -1,0 +1,13 @@
+-- StormSpeak 2.0 follow-up indexes for foreign-key lookups.
+create index if not exists pairing_tokens_learner_id_idx on private.pairing_tokens(learner_id);
+create index if not exists pairing_tokens_parent_user_id_idx on private.pairing_tokens(parent_user_id);
+create index if not exists ai_missions_session_id_idx on public.ai_missions(session_id);
+create index if not exists attempts_exercise_id_idx on public.attempts(exercise_id);
+create index if not exists attempts_goal_id_idx on public.attempts(goal_id);
+create index if not exists attempts_source_auth_user_id_idx on public.attempts(source_auth_user_id);
+create index if not exists exercises_mission_id_idx on public.exercises(mission_id);
+create index if not exists learner_goal_state_goal_id_idx on public.learner_goal_state(goal_id);
+create index if not exists learning_goal_prerequisites_prerequisite_idx on public.learning_goal_prerequisites(prerequisite_goal_id);
+create index if not exists legacy_state_snapshots_source_auth_user_id_idx on public.legacy_state_snapshots(source_auth_user_id);
+create index if not exists motivation_events_session_id_idx on public.motivation_events(session_id);
+create index if not exists review_queue_goal_id_idx on public.review_queue(goal_id);
