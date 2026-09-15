@@ -76,7 +76,7 @@
     const email=$('email').value.trim();if(!email){msg('loginMsg','Bitte E-Mail eingeben.');return}
     $('login').disabled=true;msg('loginMsg','Sende Anmeldelink…');
     try{
-      const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:`${location.origin}/stormspeak/parent/`}});
+      const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:`${location.origin}/stormspeak-parent.html`}});
       if(error)throw error;
       msg('loginMsg','Link gesendet. Öffne die E-Mail auf diesem Gerät.');
     }catch(e){msg('loginMsg','Anmeldung konnte nicht gestartet werden.');console.warn(e)}finally{$('login').disabled=false}
